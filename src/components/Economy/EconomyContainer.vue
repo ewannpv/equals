@@ -1,5 +1,8 @@
 <template>
-  <ContainerLayout color="red lighten-3">
+  <ContainerLayout
+    color="blue lighten-3"
+    :background="require('@/assets/images/economy-background.svg')"
+  >
     <v-card-title>
       <v-icon large left> mdi-cash-multiple </v-icon>
       <span class="text-h4">Economie</span>
