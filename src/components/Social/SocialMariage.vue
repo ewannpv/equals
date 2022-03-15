@@ -1,5 +1,5 @@
 <template>
-  <v-card title light elevation="2" outlined>
+  <v-card title light elevation="2" outlined class="rounded-xl">
     <v-card-title> Mariage </v-card-title>
 
     <v-card-text>
