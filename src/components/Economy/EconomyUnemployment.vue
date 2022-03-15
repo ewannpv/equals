@@ -1,5 +1,5 @@
 <template>
-  <v-card title light elevation="2" outlined class="rounded-xl">
+  <v-card title light elevation="6" outlined class="rounded-xl">
     <v-card-title> Chomage </v-card-title>
 
     <v-card-text>
