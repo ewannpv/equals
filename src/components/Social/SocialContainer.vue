@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" color="amber lighten-3" dark>
+  <ContainerLayout color="amber lighten-3">
     <v-card-title>
       <v-icon large left> mdi-cash-multiple </v-icon>
       <span class="text-h4">Sociale</span>
@@ -23,14 +23,15 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-card>
+  </ContainerLayout>
 </template>
 
 <script>
 import SocialMariage from '@/components/Social/SocialMariage.vue';
+import ContainerLayout from '@/components/layout/ContainerLayout.vue';
 
 export default {
-  components: { SocialMariage },
+  components: { SocialMariage, ContainerLayout },
 };
 </script>
 

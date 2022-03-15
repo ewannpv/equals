@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" color="red lighten-3" dark>
+  <ContainerLayout color="red lighten-3">
     <v-card-title>
       <v-icon large left> mdi-cash-multiple </v-icon>
       <span class="text-h4">Economie</span>
@@ -23,14 +23,15 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-card>
+  </ContainerLayout>
 </template>
 
 <script>
 import EconomyUnemployment from '@/components/Economy/EconomyUnemployment.vue';
+import ContainerLayout from '@/components/layout/ContainerLayout.vue';
 
 export default {
-  components: { EconomyUnemployment },
+  components: { EconomyUnemployment, ContainerLayout },
 };
 </script>
 
