@@ -1,5 +1,5 @@
 <template>
-  <CardWidget color="white">
+  <CardLayout color="white">
     <v-card-title> Mariage </v-card-title>
 
     <v-card-text>
@@ -9,15 +9,15 @@
     </v-card-text>
 
     <LineChart />
-  </CardWidget>
+  </CardLayout>
 </template>
 
 <script>
 import LineChart from '@/components/charts/LineChart.vue';
-import CardWidget from '@/components/layout/CardWidget.vue';
+import CardLayout from '@/components/layout/CardLayout.vue';
 
 export default {
-  components: { LineChart, CardWidget },
+  components: { LineChart, CardLayout },
 };
 </script>
 
