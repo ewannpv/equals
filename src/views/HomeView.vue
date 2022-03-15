@@ -1,15 +1,28 @@
 <template>
-  <div>
-    <h3>Line Chart Example in Vue</h3>
-    <line-chart></line-chart>
-  </div>
+  <v-app id="inspire">
+    <TopNavBar />
+    <v-main class="pt-2">
+      <v-container
+        ><line-chart></line-chart>
+        <line-chart></line-chart>
+        <line-chart></line-chart>
+        <line-chart></line-chart>
+        <line-chart></line-chart>
+        <line-chart></line-chart>
+        <line-chart></line-chart>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
+
 <script>
-import LineChart from '@/components/charts/LineChart.vue';
+import LineChart from '@/charts/LineChart.vue';
+import TopNavBar from '@/components/layout/TopNavBar.vue';
 
 export default {
   components: {
     LineChart,
+    TopNavBar,
   },
 };
 </script>
