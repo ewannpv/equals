@@ -1,5 +1,5 @@
 <template>
-  <v-card title light elevation="6" outlined class="rounded-xl">
+  <CardWidget color="white">
     <v-card-title> Chomage </v-card-title>
 
     <v-card-text>
@@ -7,16 +7,16 @@
       explicabo et aliquid, animi enim quaerat sequi ab eveniet delectus autem? Nobis,
       reprehenderit? Temporibus quos corrupti aliquid dolorum.
     </v-card-text>
-
     <LineChart />
-  </v-card>
+  </CardWidget>
 </template>
 
 <script>
-import LineChart from '@/charts/LineChart.vue';
+import LineChart from '@/components/charts/LineChart.vue';
+import CardWidget from '@/components/layout/CardWidget.vue';
 
 export default {
-  components: { LineChart },
+  components: { LineChart, CardWidget },
 };
 </script>
 
