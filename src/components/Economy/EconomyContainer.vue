@@ -15,13 +15,16 @@
     </v-card-text>
     <v-container fluid class="px-3">
       <v-row color="white">
-        <v-col cols="12" sm="6" class="d-flex">
+        <v-col cols="12" md="8" class="d-flex">
+          <EconomyResume />
+        </v-col>
+        <v-col cols="12" md="4" class="d-flex">
           <EconomyUnemployment />
         </v-col>
-        <v-col cols="12" sm="3" class="d-flex">
+        <v-col cols="12" md="6" class="d-flex">
           <EconomyUnemployment />
         </v-col>
-        <v-col cols="12" sm="3" class="d-flex">
+        <v-col cols="12" md="6" class="d-flex">
           <EconomyUnemployment />
         </v-col>
       </v-row>
@@ -31,10 +34,11 @@
 
 <script>
 import EconomyUnemployment from '@/components/Economy/EconomyUnemployment.vue';
+import EconomyResume from '@/components/Economy/EconomyResume.vue';
 import ContainerLayout from '@/components/layout/ContainerLayout.vue';
 
 export default {
-  components: { EconomyUnemployment, ContainerLayout },
+  components: { EconomyUnemployment, EconomyResume, ContainerLayout },
 };
 </script>
 
