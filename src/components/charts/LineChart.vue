@@ -2,32 +2,22 @@
 import { Line } from 'vue-chartjs';
 
 export default {
+  props: {
+    fetchedChartData: Object,
+  },
   extends: Line,
   data() {
+    const { fetchedChartData } = this;
     return {
       chartData: {
-        labels: [
-          'Babol',
-          'Cabanatuan',
-          'Daegu',
-          'Jerusalem',
-          'Fairfield',
-          'New York',
-          'Gangtok',
-          'Buenos Aires',
-          'Hafar Al-Batin',
-          'Idlib',
-        ],
-        datasets: [
-          {
-            label: 'Line Chart',
-            data: [600, 1150, 342, 6050, 2522, 3241, 1259, 157, 1545, 9841],
-            fill: false,
-            borderColor: '#2554FF',
-            backgroundColor: '#2554FF',
-            borderWidth: 1,
-          },
-        ],
+        labels: fetchedChartData.labels,
+        datasets: fetchedChartData.map((dataset) => ({
+          fill: false,
+          borderColor: '#2554FF',
+          backgroundColor: '#2554FF',
+          borderWidth: 1,
+          ...dataset,
+        })),
       },
       options: {
         scales: {
