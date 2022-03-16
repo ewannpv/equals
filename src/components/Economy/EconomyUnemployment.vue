@@ -7,7 +7,7 @@
       explicabo et aliquid, animi enim quaerat sequi ab eveniet delectus autem? Nobis,
       reprehenderit? Temporibus quos corrupti aliquid dolorum.
     </v-card-text>
-    <LineChart fetchedChartData="chartData"/>
+    <LineChart v-if="loaded" :fetchedChartData="chartData" :key="loaded" />
   </CardLayout>
 </template>
 
@@ -21,12 +21,14 @@ export default {
   data() {
     return {
       chartData: undefined,
+      loaded: false,
     };
   },
   // actions
   methods: {
     setChartData(data) {
       this.chartData = data;
+      this.loaded = true;
     },
   },
   mounted() {

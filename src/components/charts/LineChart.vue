@@ -7,11 +7,10 @@ export default {
   },
   extends: Line,
   data() {
-    const { fetchedChartData } = this;
     return {
       chartData: {
-        labels: fetchedChartData.labels,
-        datasets: fetchedChartData.map((dataset) => ({
+        labels: this.fetchedChartData?.labels,
+        datasets: this.fetchedChartData?.datasets.map((dataset) => ({
           fill: false,
           borderColor: '#2554FF',
           backgroundColor: '#2554FF',
@@ -23,9 +22,6 @@ export default {
         scales: {
           yAxes: [
             {
-              ticks: {
-                beginAtZero: true,
-              },
               gridLines: {
                 display: true,
               },
