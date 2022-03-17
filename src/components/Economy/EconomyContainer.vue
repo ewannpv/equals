@@ -15,17 +15,14 @@
     </v-card-text>
     <v-container fluid class="px-3">
       <v-row color="white">
-        <v-col cols="12" md="8" class="d-flex">
-          <EconomyResume />
-        </v-col>
-        <v-col cols="12" md="4" class="d-flex">
-          <EconomyUnemployment />
-        </v-col>
-        <v-col cols="12" md="6" class="d-flex">
-          <EconomyUnemployment />
-        </v-col>
-        <v-col cols="12" md="6" class="d-flex">
-          <EconomyUnemployment />
+        <v-col
+          v-for="(chartData, index) in chartsData"
+          :key="index"
+          cols="12"
+          md="6"
+          class="d-flex"
+        >
+          <GenericChartCard :chartData="chartData" />
         </v-col>
       </v-row>
     </v-container>
@@ -33,12 +30,27 @@
 </template>
 
 <script>
-import EconomyUnemployment from '@/components/Economy/EconomyUnemployment.vue';
-import EconomyResume from '@/components/Economy/EconomyResume.vue';
+import GenericChartCard from '@/components/GenericChartCard.vue';
 import ContainerLayout from '@/components/layout/ContainerLayout.vue';
+import { getTravail } from '@/utils/service';
 
 export default {
-  components: { EconomyUnemployment, EconomyResume, ContainerLayout },
+  components: { ContainerLayout, GenericChartCard },
+  data() {
+    return {
+      chartsData: {},
+      loaded: false,
+    };
+  },
+  methods: {
+    setChartsData(data) {
+      this.chartsData = data;
+      this.loaded = true;
+    },
+  },
+  mounted() {
+    getTravail().then((data) => this.setChartsData(data));
+  },
 };
 </script>
 

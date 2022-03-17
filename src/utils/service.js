@@ -10,7 +10,8 @@ const fetchApi = (route, method, body) => {
     method,
     headers,
     body,
-  }).then((response) => response.json())
+  })
+    .then((response) => response.json())
     .catch((error) => {
       console.log(error);
       return error;
@@ -19,4 +20,4 @@ const fetchApi = (route, method, body) => {
 
 export const getEconomyCharts = () => fetchApi('/economy/charts', 'GET');
 export const getSocialCharts = () => fetchApi('/social/charts', 'GET');
-export const getExample = () => fetchApi('/travail/15-64ans', 'GET');
+export const getTravail = () => fetchApi('/travail', 'GET');
