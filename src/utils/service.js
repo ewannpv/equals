@@ -1,4 +1,4 @@
-const endpoint = 'http://localhost:3000/api';
+const endpoint = 'https://equals-back.herokuapp.com/api';
 const version = 'v1';
 
 const fetchApi = (route, method, body) => {

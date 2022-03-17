@@ -1,13 +1,14 @@
 <template>
-  <CardLayout color="white">
-    <v-card-title> Chomage </v-card-title>
-
+  <CardLayout v-if="loaded" color="white">
+    <v-card-title>{{chartData.source.title}}</v-card-title>
     <v-card-text>
-      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam quidem hic, dolorum
-      explicabo et aliquid, animi enim quaerat sequi ab eveniet delectus autem? Nobis,
-      reprehenderit? Temporibus quos corrupti aliquid dolorum.
+      {{chartData.description}}
     </v-card-text>
-    <LineChart v-if="loaded" :fetchedChartData="chartData" :key="loaded" />
+    <LineChart :fetchedChartData="chartData" :key="loaded" />
+    <v-card-text>
+      {{chartData.lecture}}<br/>
+      Source : <a :href="chartData.source.link">{{chartData.source.title}}</a>
+    </v-card-text>
   </CardLayout>
 </template>
 
