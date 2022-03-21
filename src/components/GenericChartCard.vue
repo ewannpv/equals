@@ -1,5 +1,5 @@
 <template>
-  <CardLayout color="white">
+  <CardLayout color="white" width="100%">
     <v-card-title>{{ chartData.source.title }}</v-card-title>
     <v-card-text>
       {{ chartData.description }}

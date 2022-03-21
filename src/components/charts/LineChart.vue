@@ -1,5 +1,6 @@
 <script>
 import { Line } from 'vue-chartjs';
+import { findLineByLeastSquares } from '@/utils/computing';
 
 export default {
   props: {
@@ -48,22 +49,29 @@ export default {
     datasets.forEach((dataset) => {
       /* compute average linear coefficient from data points */
       let coeffLinear = 0;
+      const computed = findLineByLeastSquares(labels, dataset.data);
+      const coefficiens = [];
       for (let i = 1; i < dataset.data.length; i += 1) {
         /* sum up gaps */
-        coeffLinear += dataset.data[i] - dataset.data[i - 1] / (labels[i] - labels[i - 1]);
+        const step = dataset.data[i] - dataset.data[i - 1] / (labels[i] - labels[i - 1]);
+        coeffLinear += step;
+        console.log(coeffLinear);
+        coefficiens.push(step);
       }
       /* division to get average */
       coeffLinear /= dataset.data.length - 1; // get average gap between 2 data points
-
+      const sorted = coefficiens.sort();
+      const median = sorted[Math.floor(sorted.length / 2)];
+      console.log(`Median: ${median}`);
       /* construct approximated linear dataset from effective dataset */
       const linearData = new Array(dataset.length);
       [linearData[0]] = dataset.data;
       for (let i = 1; i < dataset.data.length; i += 1) {
-        linearData[i] = linearData[0] + coeffLinear * (labels[i] - labels[0]);
+        linearData[i] = linearData[0] + median * (labels[i] - labels[0]);
       }
       datasets.push({
         ...dataset,
-        data: linearData,
+        data: computed,
         label: `${dataset.label} linéaire`,
       });
     });
