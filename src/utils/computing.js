@@ -24,7 +24,7 @@ const bestFitLine = (valuesX, valuesY) => {
    * Calculate the sum for each of the parts necessary.
    */
   for (let v = 0; v < valuesX.length; v += 1) {
-    const x = parseInt(valuesX[v], 10);
+    const x = valuesX[v];
     const y = valuesY[v];
     sumX += x;
     sumY += y;
@@ -37,6 +37,7 @@ const bestFitLine = (valuesX, valuesY) => {
    * Calculate a and b for the formula:
    * y = ax + b
    */
+  console.log(`sumX=${sumX} sumY=${sumY} sumXX=${summXX} sumXY=${sumXY}`);
   const a = (count * sumXY - sumX * sumY) / (count * summXX - sumX * sumX);
   const b = sumY / count - (a * sumX) / count;
 
@@ -77,4 +78,24 @@ const getBestFitLineExpValues = (valuesX, valuesY) => {
   return resultValuesY;
 };
 
-module.exports = { getBestFitLineValues, getBestFitLineExpValues };
+const bestFitLineLog = (valuesX, valuesY) => {
+  // map valuesX to ln then use standard linear regression
+  const valuesXLog = valuesX.map((val) => Math.log(val));
+  console.log(valuesXLog);
+  console.log(bestFitLine(valuesXLog, valuesY));
+  return bestFitLine(valuesXLog, valuesY);
+};
+
+const getBestFitLineLogValues = (valuesX, valuesY) => {
+  const { a, b } = bestFitLineLog(valuesX, valuesY);
+  const resultValuesY = [];
+  for (let v = 0; v < valuesY.length; v += 1) {
+    const x = valuesX[v];
+    const y = a * Math.log(x) + b;
+    resultValuesY.push(y);
+  }
+
+  return resultValuesY;
+};
+
+module.exports = { getBestFitLineValues, getBestFitLineExpValues, getBestFitLineLogValues };

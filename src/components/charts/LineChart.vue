@@ -1,6 +1,6 @@
 <script>
 import { Line } from 'vue-chartjs';
-import { getBestFitLineExpValues, getBestFitLineValues } from '@/utils/computing';
+import { getBestFitLineExpValues, getBestFitLineLogValues, getBestFitLineValues } from '@/utils/computing';
 
 export default {
   props: {
@@ -46,9 +46,11 @@ export default {
   },
   mounted() {
     const { datasets, labels } = this.chartData;
+    const valuesX = labels.map((x) => parseInt(x, 10));
     datasets.forEach((dataset) => {
-      const linearValues = getBestFitLineValues(labels, dataset.data);
-      const expValues = getBestFitLineExpValues(labels, dataset.data);
+      const linearValues = getBestFitLineValues(valuesX, dataset.data);
+      const expValues = getBestFitLineExpValues(valuesX, dataset.data);
+      const logValues = getBestFitLineLogValues(valuesX, dataset.data);
       datasets.push({
         ...dataset,
         data: linearValues,
@@ -59,6 +61,12 @@ export default {
         ...dataset,
         data: expValues,
         label: `${dataset.label} exponential`,
+        hidden: true,
+      });
+      datasets.push({
+        ...dataset,
+        data: logValues,
+        label: `${dataset.label} logarithmic`,
         hidden: true,
       });
     });
