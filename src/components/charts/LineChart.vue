@@ -65,7 +65,6 @@ export default {
 
       /* check closest model */
       const minDeviation = Math.min(linearDeviation, expDeviation, logDeviation);
-      console.log(`linear=${linearDeviation} exp=${expDeviation} log=${logDeviation} min=${minDeviation}`);
 
       /* add the closest model to datasets for prevision */
       const estimatedDataset = {
