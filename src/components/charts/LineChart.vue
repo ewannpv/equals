@@ -73,6 +73,7 @@ export default {
         ...dataset,
         data: computed,
         label: `${dataset.label} linéaire`,
+        hidden: true,
       });
     });
     this.renderChart(this.chartData, this.options);
