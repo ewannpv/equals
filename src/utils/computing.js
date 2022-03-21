@@ -1,34 +1,31 @@
-const findLineByLeastSquares = (valuesX, valuesY) => {
+// compute best fit line parameters using the least squares method
+const bestFitLine = (valuesX, valuesY) => {
   let sumX = 0;
   let sumY = 0;
   let sumXY = 0;
   let summXX = 0;
   let count = 0;
 
-  /*
-   * We'll use those letiables for faster read/write access.
-   */
-  let x = 0;
-  let y = 0;
-  const valuesLength = valuesX.length;
-
-  if (valuesLength !== valuesY.length) {
+  if (valuesX.length !== valuesY.length) {
     throw new Error('The parameters valuesX and valuesY need to have same size!');
   }
 
   /*
    * Nothing to do.
    */
-  if (valuesLength === 0) {
-    return [];
+  if (valuesX.length === 0) {
+    return {
+      a: 0,
+      b: 0,
+    };
   }
 
   /*
    * Calculate the sum for each of the parts necessary.
    */
-  for (let v = 0; v < valuesLength; v += 1) {
-    x = parseInt(valuesX[v], 10);
-    y = valuesY[v];
+  for (let v = 0; v < valuesX.length; v += 1) {
+    const x = parseInt(valuesX[v], 10);
+    const y = valuesY[v];
     sumX += x;
     sumY += y;
     summXX += x * x;
@@ -37,26 +34,47 @@ const findLineByLeastSquares = (valuesX, valuesY) => {
   }
 
   /*
-   * Calculate m and b for the formular:
-   * y = x * m + b
+   * Calculate a and b for the formula:
+   * y = ax + b
    */
-  const m = (count * sumXY - sumX * sumY) / (count * summXX - sumX * sumX);
-  const b = sumY / count - (m * sumX) / count;
+  const a = (count * sumXY - sumX * sumY) / (count * summXX - sumX * sumX);
+  const b = sumY / count - (a * sumX) / count;
 
-  /*
-   * We will make the x and y result line now
-   */
-  const resultValuesX = [];
+  return {
+    a,
+    b,
+  };
+};
+
+const getBestFitLineValues = (valuesX, valuesY) => {
+  const { a, b } = bestFitLine(valuesX, valuesY);
   const resultValuesY = [];
 
-  for (let v = 0; v < valuesLength; v += 1) {
-    x = valuesX[v];
-    y = x * m + b;
-    resultValuesX.push(x);
+  for (let v = 0; v < valuesY.length; v += 1) {
+    const x = valuesX[v];
+    const y = x * a + b;
     resultValuesY.push(y);
   }
 
   return resultValuesY;
 };
 
-module.exports = { findLineByLeastSquares };
+const bestFitLineExp = (valuesX, valuesY) => {
+  // map values to ln then use standard linear regression
+  const valuesYlog = valuesY.map((val) => Math.log(val));
+  return bestFitLine(valuesX, valuesYlog);
+};
+
+const getBestFitLineExpValues = (valuesX, valuesY) => {
+  const { a, b } = bestFitLineExp(valuesX, valuesY);
+  const resultValuesY = [];
+  for (let v = 0; v < valuesY.length; v += 1) {
+    const x = valuesX[v];
+    const y = Math.exp(a * x) * Math.exp(b);
+    resultValuesY.push(y);
+  }
+
+  return resultValuesY;
+};
+
+module.exports = { getBestFitLineValues, getBestFitLineExpValues };
