@@ -37,7 +37,6 @@ const bestFitLine = (valuesX, valuesY) => {
    * Calculate a and b for the formula:
    * y = ax + b
    */
-  console.log(`sumX=${sumX} sumY=${sumY} sumXX=${summXX} sumXY=${sumXY}`);
   const a = (count * sumXY - sumX * sumY) / (count * summXX - sumX * sumX);
   const b = sumY / count - (a * sumX) / count;
 
@@ -81,8 +80,6 @@ const getBestFitLineExpValues = (valuesX, valuesY) => {
 const bestFitLineLog = (valuesX, valuesY) => {
   // map valuesX to ln then use standard linear regression
   const valuesXLog = valuesX.map((val) => Math.log(val));
-  console.log(valuesXLog);
-  console.log(bestFitLine(valuesXLog, valuesY));
   return bestFitLine(valuesXLog, valuesY);
 };
 
@@ -98,4 +95,19 @@ const getBestFitLineLogValues = (valuesX, valuesY) => {
   return resultValuesY;
 };
 
-module.exports = { getBestFitLineValues, getBestFitLineExpValues, getBestFitLineLogValues };
+const getMeanSquaredDeviation = (values, estimatimations) => {
+  if (values.length !== estimatimations.length) {
+    throw new Error('The observed values and the estimations need to have same size!');
+  }
+
+  let sumSquare = 0;
+  for (let i = 0; i < values.length; i += 1) {
+    sumSquare += (values[i] - estimatimations[i]) ** 2;
+  }
+
+  return sumSquare / values.length;
+};
+
+module.exports = {
+  getBestFitLineValues, getBestFitLineExpValues, getBestFitLineLogValues, getMeanSquaredDeviation,
+};
