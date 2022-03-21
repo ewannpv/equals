@@ -1,10 +1,10 @@
 <template>
-  <CardLayout v-if="filtredChartData" color="white" width="100%">
-    <v-card-title>{{ filtredChartData.source.title }}</v-card-title>
+  <CardLayout v-if="filteredChartData" color="white" width="100%">
+    <v-card-title>{{ filteredChartData.source.title }}</v-card-title>
     <v-card-text>
-      {{ filtredChartData.description }}
+      {{ filteredChartData.description }}
     </v-card-text>
-    <LineChart :fetchedChartData.sync="lineChartData" />
+    <LineChart :fetchedChartData="filteredChartData" :key="refresh" />
     <v-row>
       <v-col class="px-4">
         <v-range-slider
@@ -13,36 +13,20 @@
           :min="min"
           hide-details
           class="align-center"
-          @end="filterChartData()"
+          @end="filterChartData"
         >
           <template v-slot:prepend>
-            <v-text-field
-              :value="range[0]"
-              class="mt-0 pt-0"
-              hide-details
-              single-line
-              type="number"
-              style="width: 60px"
-              @change="filterChartData()"
-            ></v-text-field>
+            {{ range[0] }}
           </template>
           <template v-slot:append>
-            <v-text-field
-              :value="range[1]"
-              class="mt-0 pt-0"
-              hide-details
-              single-line
-              type="number"
-              style="width: 60px"
-              @change="filterChartData()"
-            ></v-text-field>
+            {{ range[1] }}
           </template>
         </v-range-slider>
       </v-col>
     </v-row>
     <v-card-text>
-      {{ filtredChartData.lecture }}<br />
-      Source : <a :href="filtredChartData.source.link">{{ filtredChartData.source.title }}</a>
+      {{ filteredChartData.lecture }}<br />
+      Source : <a :href="filteredChartData.source.link">{{ filteredChartData.source.title }}</a>
     </v-card-text>
   </CardLayout>
 </template>
@@ -53,7 +37,7 @@ import CardLayout from '@/components/layout/CardLayout.vue';
 
 export default {
   mounted() {
-    this.filtredChartData = this.chartData;
+    this.filteredChartData = JSON.parse(JSON.stringify(this.chartData));
     [this.min, this.max] = [
       this.chartData.labels[0],
       this.chartData.labels[this.chartData.labels.length - 1],
@@ -65,25 +49,29 @@ export default {
     chartData: {},
   },
   methods: {
-    filterChartData(e) {
-      console.log(e);
-      this.filtredChartData.labels = this.chartData.labels.filter(
-        (label) => this.range[0] && label <= this.range[1],
-      );
-    },
-  },
-  computed: {
-    lineChartData() {
-      console.log('oof :', this.filtredChartData);
-      return this.filtredChartData;
+    filterChartData() {
+      this.filteredChartData = JSON.parse(JSON.stringify(this.chartData));
+      for (let index = this.chartData.labels.length - 1; index >= 0; index -= 1) {
+        const value = this.chartData.labels[index];
+
+        if (value < this.range[0] || value > this.range[1]) {
+          this.filteredChartData?.labels.splice(index, 1);
+
+          this.filteredChartData?.datasets.forEach((dataset) => {
+            dataset.data.splice(index, 1);
+          });
+        }
+      }
+      this.refresh = !this.refresh;
     },
   },
   data() {
     return {
+      refresh: false,
       min: 0,
       max: 0,
       range: [0, 0],
-      filtredChartData: undefined,
+      filteredChartData: undefined,
     };
   },
 };
