@@ -39,18 +39,14 @@
               v-model="completedChartData.datasets[0].previsions.selectedType"
               @change="changeEstimationType"
             >
-              <v-radio
-                label="Linéaire"
-                value="linear"
-              ></v-radio>
-              <v-radio
-                label="Exponentielle"
-                value="exponential"
-              ></v-radio>
-              <v-radio
-                label="Logarithmique"
-                value="logarithmic"
-              ></v-radio>
+              <v-radio label="Linéaire" value="linear"></v-radio>
+              <v-radio label="Exponentielle" value="exponential"></v-radio>
+              <v-radio label="Logarithmique" value="logarithmic"></v-radio>
+            </v-radio-group>
+            <hr />
+            <v-radio-group v-model="row" row>
+              <v-radio label="Option 1" value="radio-1"></v-radio>
+              <v-radio label="Option 2" value="radio-2"></v-radio>
             </v-radio-group>
           </v-col>
         </v-row>
@@ -75,6 +71,18 @@ import {
 } from '@/utils/computing';
 
 export default {
+  data() {
+    return {
+      refresh: false,
+      min: 0,
+      max: 0,
+      lastDataYear: 0,
+      range: [0, 0],
+      completedChartData: undefined,
+      filteredChartData: undefined,
+      selectedDataset: 0,
+    };
+  },
   mounted() {
     [this.min, this.max, this.lastDataYear] = [
       parseInt(this.chartData.labels[0], 10),
@@ -138,15 +146,30 @@ export default {
         switch (minDeviation) {
           case linearDeviation:
             bestType = 'linear';
-            estimatedValues = getEstimatedValuesFromCoefficients(futureYears, linearValues.a, linearValues.b, 'linear');
+            estimatedValues = getEstimatedValuesFromCoefficients(
+              futureYears,
+              linearValues.a,
+              linearValues.b,
+              'linear',
+            );
             break;
           case expDeviation:
             bestType = 'exponential';
-            estimatedValues = getEstimatedValuesFromCoefficients(futureYears, expValues.a, expValues.b, 'exponential');
+            estimatedValues = getEstimatedValuesFromCoefficients(
+              futureYears,
+              expValues.a,
+              expValues.b,
+              'exponential',
+            );
             break;
           case logDeviation:
             bestType = 'logarithmic';
-            estimatedValues = getEstimatedValuesFromCoefficients(futureYears, logValues.a, logValues.b, 'logarithmic');
+            estimatedValues = getEstimatedValuesFromCoefficients(
+              futureYears,
+              logValues.a,
+              logValues.b,
+              'logarithmic',
+            );
             break;
           default:
             break;
@@ -181,20 +204,7 @@ export default {
       console.log(this.selectedDataset);
       console.log(arg);
     },
-    changeEstimationType() {
-    },
-  },
-  data() {
-    return {
-      refresh: false,
-      min: 0,
-      max: 0,
-      lastDataYear: 0,
-      range: [0, 0],
-      completedChartData: undefined,
-      filteredChartData: undefined,
-      selectedDataset: 0,
-    };
+    changeEstimationType() {},
   },
 };
 </script>
