@@ -131,17 +131,25 @@ export default {
       }
       this.refresh = !this.refresh;
     },
+    getArrayOfYearsToPredict() {
+      const lastYearWithEffectiveData = parseInt(
+        this.chartData.labels[this.chartData.labels.length - 1],
+        10,
+      );
+      const completionLength = this.lastEstimatedYear - lastYearWithEffectiveData;
+      const futureYears = new Array(completionLength);
+      for (let i = 0; i < completionLength; i += 1) {
+        futureYears[i] = lastYearWithEffectiveData + i + 1;
+      }
+
+      return futureYears;
+    },
     completeDatasetWithPrevision() {
       this.completedChartData = {
         ...this.chartData,
       };
 
-      const completionLength = this.lastEstimatedYear - this.max;
-      const futureYears = new Array(completionLength);
-      for (let i = 0; i < completionLength; i += 1) {
-        futureYears[i] = +this.max + i + 1;
-      }
-
+      const futureYears = this.getArrayOfYearsToPredict();
       this.completedChartData.labels = this.chartData.labels.concat(futureYears);
 
       const { datasets, labels } = this.chartData;
@@ -232,7 +240,53 @@ export default {
       this.selectedEstimationType = this.getSelectedDataset()?.previsions.selectedType;
     },
     onChangeEstimationType() {
-      this.getSelectedDataset().previsions.selectedType = this.selectedEstimationType;
+      const dataset = this.getSelectedDataset();
+      if (dataset.previsions.selectedType !== this.selectedEstimationType) {
+        /* model for dataset changed -> update computed predicted data */
+        dataset.previsions.selectedType = this.selectedEstimationType;
+        this.updateEstimationData();
+      }
+    },
+    updateEstimationData() {
+      const dataset = this.getSelectedDataset();
+      const futureYears = this.getArrayOfYearsToPredict();
+      let newValues;
+      switch (dataset.previsions.selectedType) {
+        case estimationTypes[0]:
+          newValues = getEstimatedValuesFromCoefficients(
+            futureYears,
+            dataset.previsions.linearCoefficients.a,
+            dataset.previsions.linearCoefficients.b,
+            estimationTypes[0],
+          );
+          break;
+        case estimationTypes[1]:
+          newValues = getEstimatedValuesFromCoefficients(
+            futureYears,
+            dataset.previsions.expCoefficients.a,
+            dataset.previsions.expCoefficients.b,
+            estimationTypes[1],
+          );
+          break;
+        case estimationTypes[2]:
+          newValues = getEstimatedValuesFromCoefficients(
+            futureYears,
+            dataset.previsions.logCoefficients.a,
+            dataset.previsions.logCoefficients.b,
+            estimationTypes[2],
+          );
+          break;
+        default:
+          break;
+      }
+
+      dataset.data.splice(
+        dataset.data.length - futureYears.length,
+        futureYears.length,
+        ...newValues,
+      );
+      console.log(dataset.data);
+      this.filterChartData();
     },
   },
 };
