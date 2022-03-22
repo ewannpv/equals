@@ -28,7 +28,7 @@
       Ceci est une prévision
       <v-container>
         <v-row>
-          <v-col>
+          <v-col md="6">
             <v-select
               v-model="selectedDataset"
               :items="completedChartData.datasets.map((dataset) => dataset.label)"
@@ -36,15 +36,13 @@
               single-line
               @change="onChangeSelectedDatasetForPrevision"
             ></v-select>
-            <v-radio-group
+          </v-col>
+          <v-col md="6">
+            <v-select
               v-model="selectedEstimationType"
-              @change="onChangeEstimationType"
-            >
-              <v-radio label="Linéaire" value="linear"></v-radio>
-              <v-radio label="Exponentielle" value="exponential"></v-radio>
-              <v-radio label="Logarithmique" value="logarithmic"></v-radio>
-            </v-radio-group>
-            <hr />
+              @change="changeEstimationType"
+              :items="estimationTypes"
+            ></v-select>
           </v-col>
         </v-row>
       </v-container>
@@ -60,6 +58,7 @@
 import LineChart from '@/components/charts/LineChart.vue';
 import CardLayout from '@/components/layout/CardLayout.vue';
 import {
+  estimationTypes,
   getBestFitLineExpValues,
   getBestFitLineLogValues,
   getBestFitLineValues,
@@ -70,6 +69,7 @@ import {
 export default {
   data() {
     return {
+      estimationTypes,
       refresh: false,
       min: 0,
       max: 0,
@@ -91,7 +91,10 @@ export default {
     this.completeDatasetWithPrevision();
     this.filteredChartData = JSON.parse(JSON.stringify(this.chartData));
   },
-  components: { LineChart, CardLayout },
+  components: {
+    LineChart,
+    CardLayout,
+  },
   props: {
     chartData: {},
   },
@@ -112,7 +115,10 @@ export default {
       this.refresh = !this.refresh;
     },
     completeDatasetWithPrevision() {
-      this.completedChartData = { ...this.chartData };
+      console.log('oof', estimationTypes);
+      this.completedChartData = {
+        ...this.chartData,
+      };
 
       const completionLength = this.max - this.lastDataYear;
       const futureYears = new Array(completionLength);
@@ -143,30 +149,30 @@ export default {
         let bestType;
         switch (minDeviation) {
           case linearDeviation:
-            bestType = 'linear';
+            bestType = estimationTypes.at(0);
             estimatedValues = getEstimatedValuesFromCoefficients(
               futureYears,
               linearValues.a,
               linearValues.b,
-              'linear',
+              estimationTypes[0],
             );
             break;
           case expDeviation:
-            bestType = 'exponential';
+            bestType = estimationTypes.at(1);
             estimatedValues = getEstimatedValuesFromCoefficients(
               futureYears,
               expValues.a,
               expValues.b,
-              'exponential',
+              estimationTypes[1],
             );
             break;
           case logDeviation:
-            bestType = 'logarithmic';
+            bestType = estimationTypes.at(2);
             estimatedValues = getEstimatedValuesFromCoefficients(
               futureYears,
               logValues.a,
               logValues.b,
-              'logarithmic',
+              estimationTypes[2],
             );
             break;
           default:
@@ -202,8 +208,9 @@ export default {
       this.selectedEstimationType = this.getSelectedDataset().previsions.selectedType;
     },
     getSelectedDataset() {
-      return this.completedChartData.datasets
-        .find((dataset) => dataset.label === this.selectedDataset);
+      return this.completedChartData.datasets.find(
+        (dataset) => dataset.label === this.selectedDataset,
+      );
     },
     onChangeSelectedDatasetForPrevision() {
       this.selectedEstimationType = this.getSelectedDataset()?.previsions.selectedType;
