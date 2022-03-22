@@ -30,14 +30,15 @@
         <v-row>
           <v-col>
             <v-select
+              v-model="selectedDataset"
               :items="completedChartData.datasets.map((dataset) => dataset.label)"
-              label="Selectionnez un dataser"
+              label="Selectionnez un dataset"
               single-line
               @change="onChangeSelectedDatasetForPrevision"
             ></v-select>
             <v-radio-group
-              v-model="completedChartData.datasets[0].previsions.selectedType"
-              @change="changeEstimationType"
+              v-model="selectedEstimationType"
+              @change="onChangeEstimationType"
             >
               <v-radio label="Linéaire" value="linear"></v-radio>
               <v-radio label="Exponentielle" value="exponential"></v-radio>
@@ -76,7 +77,8 @@ export default {
       range: [0, 0],
       completedChartData: undefined,
       filteredChartData: undefined,
-      selectedDataset: 0,
+      selectedDataset: undefined,
+      selectedEstimationType: undefined,
     };
   },
   mounted() {
@@ -195,12 +197,20 @@ export default {
           },
         };
       });
+
+      this.selectedDataset = this.chartData.datasets[0].label;
+      this.selectedEstimationType = this.getSelectedDataset().previsions.selectedType;
     },
-    onChangeSelectedDatasetForPrevision(arg) {
-      console.log(this.selectedDataset);
-      console.log(arg);
+    getSelectedDataset() {
+      return this.completedChartData.datasets
+        .find((dataset) => dataset.label === this.selectedDataset);
     },
-    changeEstimationType() {},
+    onChangeSelectedDatasetForPrevision() {
+      this.selectedEstimationType = this.getSelectedDataset()?.previsions.selectedType;
+    },
+    onChangeEstimationType() {
+      this.getSelectedDataset().previsions.selectedType = this.selectedEstimationType;
+    },
   },
 };
 </script>
