@@ -35,6 +35,15 @@
               single-line
               @change="onChangeSelectedDatasetForPrevision"
             ></v-select>
+            <v-radio-group
+              v-model="completedChartData.datasets[0].previsions.selectedType"
+              @change="changeEstimationType"
+            >
+              <v-radio label="Linéaire" value="linear"></v-radio>
+              <v-radio label="Exponentielle" value="exponential"></v-radio>
+              <v-radio label="Logarithmique" value="logarithmic"></v-radio>
+            </v-radio-group>
+            <hr />
           </v-col>
         </v-row>
       </v-container>
