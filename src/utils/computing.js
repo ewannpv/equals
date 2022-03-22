@@ -46,35 +46,10 @@ const bestFitLine = (valuesX, valuesY) => {
   };
 };
 
-const getBestFitLineValues = (valuesX, valuesY) => {
-  const { a, b } = bestFitLine(valuesX, valuesY);
-  const resultValuesY = [];
-
-  for (let v = 0; v < valuesY.length; v += 1) {
-    const x = valuesX[v];
-    const y = x * a + b;
-    resultValuesY.push(y);
-  }
-
-  return resultValuesY;
-};
-
 const bestFitLineExp = (valuesX, valuesY) => {
   // map values to ln then use standard linear regression
   const valuesYlog = valuesY.map((val) => Math.log(val));
   return bestFitLine(valuesX, valuesYlog);
-};
-
-const getBestFitLineExpValues = (valuesX, valuesY) => {
-  const { a, b } = bestFitLineExp(valuesX, valuesY);
-  const resultValuesY = [];
-  for (let v = 0; v < valuesY.length; v += 1) {
-    const x = valuesX[v];
-    const y = Math.exp(a * x) * Math.exp(b);
-    resultValuesY.push(y);
-  }
-
-  return resultValuesY;
 };
 
 const bestFitLineLog = (valuesX, valuesY) => {
@@ -83,16 +58,55 @@ const bestFitLineLog = (valuesX, valuesY) => {
   return bestFitLine(valuesXLog, valuesY);
 };
 
-const getBestFitLineLogValues = (valuesX, valuesY) => {
-  const { a, b } = bestFitLineLog(valuesX, valuesY);
-  const resultValuesY = [];
-  for (let v = 0; v < valuesY.length; v += 1) {
-    const x = valuesX[v];
-    const y = a * Math.log(x) + b;
-    resultValuesY.push(y);
+const getEstimatedValuesFromCoefficients = (valuesX, a, b, type) => {
+  let mapFunction;
+  switch (type) {
+    case 'linear':
+      mapFunction = (x) => x * a + b;
+      break;
+    case 'exponential':
+      mapFunction = (x) => Math.exp(a * x) * Math.exp(b);
+      break;
+    case 'logarithmic':
+      mapFunction = (x) => a * Math.log(x) + b;
+      break;
+    default:
+      throw new Error('unsupported parameter type');
+  }
+
+  const resultValuesY = new Array(valuesX.length);
+  for (let i = 0; i < valuesX.length; i += 1) {
+    resultValuesY[i] = mapFunction(valuesX[i]);
   }
 
   return resultValuesY;
+};
+
+const getBestFitLineValues = (valuesX, valuesY) => {
+  const { a, b } = bestFitLine(valuesX, valuesY);
+  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, 'linear');
+
+  return {
+    a, b, resultValuesY,
+  };
+};
+
+const getBestFitLineExpValues = (valuesX, valuesY) => {
+  const { a, b } = bestFitLineExp(valuesX, valuesY);
+  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, 'exponential');
+
+  return {
+    a, b, resultValuesY,
+  };
+};
+
+const getBestFitLineLogValues = (valuesX, valuesY) => {
+  const { a, b } = bestFitLineLog(valuesX, valuesY);
+  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, 'logarithmic');
+
+  return {
+    a, b, resultValuesY,
+  };
 };
 
 const getMeanSquaredDeviation = (values, estimatimations) => {
@@ -109,5 +123,9 @@ const getMeanSquaredDeviation = (values, estimatimations) => {
 };
 
 module.exports = {
-  getBestFitLineValues, getBestFitLineExpValues, getBestFitLineLogValues, getMeanSquaredDeviation,
+  getBestFitLineValues,
+  getBestFitLineExpValues,
+  getBestFitLineLogValues,
+  getMeanSquaredDeviation,
+  getEstimatedValuesFromCoefficients,
 };
