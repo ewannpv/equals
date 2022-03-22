@@ -29,7 +29,16 @@
       <v-container>
         <v-row>
           <v-col>
-            <v-radio-group v-model="previsions.selectedType" @change="changeEstimationType">
+            <v-select
+              :items="completedChartData.datasets.map((dataset) => dataset.label)"
+              label="Selectionnez un dataser"
+              single-line
+              @change="onChangeSelectedDatasetForPrevision"
+            ></v-select>
+            <v-radio-group
+              v-model="completedChartData.datasets[0].previsions.selectedType"
+              @change="changeEstimationType"
+            >
               <v-radio
                 label="Linéaire"
                 value="linear"
@@ -97,27 +106,24 @@ export default {
       this.refresh = !this.refresh;
     },
     completeDatasetWithPrevision() {
-      this.completedChartData = JSON.parse(JSON.stringify(this.chartData));
+      this.completedChartData = { ...this.chartData };
+
       const completionLength = this.max - this.lastDataYear;
       const futureYears = new Array(completionLength);
       for (let i = 0; i < completionLength; i += 1) {
         futureYears[i] = this.lastDataYear + i + 1;
       }
 
-      const { datasets, labels } = this.completedChartData;
+      this.completedChartData.labels = this.chartData.labels.concat(futureYears);
+
+      const { datasets, labels } = this.chartData;
       const valuesX = labels.map((x) => parseInt(x, 10));
-      datasets.forEach((dataset) => {
+
+      this.completedChartData.datasets = datasets.map((dataset) => {
         /* compute estimated model linear, exponential and logarithmic */
         const linearValues = getBestFitLineValues(valuesX, dataset.data);
         const expValues = getBestFitLineExpValues(valuesX, dataset.data);
         const logValues = getBestFitLineLogValues(valuesX, dataset.data);
-
-        this.previsions.linearCoefficients.a = linearValues.a;
-        this.previsions.linearCoefficients.b = linearValues.b;
-        this.previsions.expCoefficients.a = expValues.a;
-        this.previsions.expCoefficients.b = expValues.b;
-        this.previsions.logCoefficients.a = logValues.a;
-        this.previsions.logCoefficients.b = logValues.b;
 
         /* compute standard error associated with each models */
         const linearDeviation = getMeanSquaredDeviation(dataset.data, linearValues.resultValuesY);
@@ -128,31 +134,54 @@ export default {
         const minDeviation = Math.min(linearDeviation, expDeviation, logDeviation);
 
         let estimatedValues;
+        let bestType;
         switch (minDeviation) {
           case linearDeviation:
-            this.previsions.bestType = 'linear';
+            bestType = 'linear';
             estimatedValues = getEstimatedValuesFromCoefficients(futureYears, linearValues.a, linearValues.b, 'linear');
             break;
           case expDeviation:
-            this.previsions.bestType = 'exponential';
+            bestType = 'exponential';
             estimatedValues = getEstimatedValuesFromCoefficients(futureYears, expValues.a, expValues.b, 'exponential');
             break;
           case logDeviation:
-            this.previsions.bestType = 'logarithmic';
+            bestType = 'logarithmic';
             estimatedValues = getEstimatedValuesFromCoefficients(futureYears, logValues.a, logValues.b, 'logarithmic');
             break;
           default:
             break;
         }
-        this.previsions.selectedType = this.previsions.bestType;
-        console.log(this.previsions.selectedType);
 
-        dataset.data.push(...estimatedValues);
+        return {
+          ...dataset,
+          data: dataset.data.concat(estimatedValues),
+          previsions: {
+            bestType,
+            selectedType: bestType,
+            linearCoefficients: {
+              a: linearValues.a,
+              b: linearValues.b,
+              standardSquaredDeviation: linearDeviation,
+            },
+            expCoefficients: {
+              a: expValues.a,
+              b: expValues.b,
+              standardSquaredDeviation: expDeviation,
+            },
+            logCoefficients: {
+              a: logValues.a,
+              b: logValues.b,
+              standardSquaredDeviation: logDeviation,
+            },
+          },
+        };
       });
-      labels.push(...futureYears);
+    },
+    onChangeSelectedDatasetForPrevision(arg) {
+      console.log(this.selectedDataset);
+      console.log(arg);
     },
     changeEstimationType() {
-      console.log(this.previsions.selectedType);
     },
   },
   data() {
@@ -164,25 +193,7 @@ export default {
       range: [0, 0],
       completedChartData: undefined,
       filteredChartData: undefined,
-      previsions: {
-        bestType: undefined,
-        selectedType: undefined,
-        linearCoefficients: {
-          a: 0,
-          b: 0,
-          standardSquaredDeviation: 0,
-        },
-        expCoefficients: {
-          a: 0,
-          b: 0,
-          standardSquaredDeviation: 0,
-        },
-        logCoefficients: {
-          a: 0,
-          b: 0,
-          standardSquaredDeviation: 0,
-        },
-      },
+      selectedDataset: 0,
     };
   },
 };
