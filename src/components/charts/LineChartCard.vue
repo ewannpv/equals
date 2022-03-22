@@ -24,28 +24,33 @@
         </v-range-slider>
       </v-col>
     </v-row>
-    <v-card-text v-if="range[1] > lastDataYear">
-      Ceci est une prévision
-      <v-container>
-        <v-row>
-          <v-col md="6">
-            <v-select
-              v-model="selectedDataset"
-              :items="completedChartData.datasets.map((dataset) => dataset.label)"
-              label="Selectionnez un dataset"
-              single-line
-              @change="onChangeSelectedDatasetForPrevision"
-            ></v-select>
-          </v-col>
-          <v-col md="6">
-            <v-select
-              v-model="selectedEstimationType"
-              @change="changeEstimationType"
-              :items="estimationTypes"
-            ></v-select>
-          </v-col>
-        </v-row>
-      </v-container>
+    <v-card-text>
+      <v-btn depressed @click="displayEstimation">
+        {{ displayEstimationBtn ? 'Cacher les prévisions' : 'Afficher les prévisions' }}
+      </v-btn>
+      <div v-if="displayEstimationBtn">
+        Ceci est une prévision
+        <v-container>
+          <v-row>
+            <v-col md="6">
+              <v-select
+                v-model="selectedDataset"
+                :items="completedChartData.datasets.map((dataset) => dataset.label)"
+                label="Selectionnez un dataset"
+                single-line
+                @change="onChangeSelectedDatasetForPrevision"
+              ></v-select>
+            </v-col>
+            <v-col md="6">
+              <v-select
+                v-model="selectedEstimationType"
+                @change="onChangeEstimationType"
+                :items="estimationTypes"
+              ></v-select>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
     </v-card-text>
     <v-card-text>
       {{ filteredChartData.lecture }}<br />
@@ -69,11 +74,12 @@ import {
 export default {
   data() {
     return {
+      displayEstimationBtn: false,
       estimationTypes,
       refresh: false,
       min: 0,
       max: 0,
-      lastDataYear: 0,
+      lastEstimatedYear: 2050,
       range: [0, 0],
       completedChartData: undefined,
       filteredChartData: undefined,
@@ -82,14 +88,13 @@ export default {
     };
   },
   mounted() {
-    [this.min, this.max, this.lastDataYear] = [
-      parseInt(this.chartData.labels[0], 10),
-      2050,
-      parseInt(this.chartData.labels[this.chartData.labels.length - 1], 10),
+    [this.min, this.max] = [
+      this.chartData.labels[0],
+      this.chartData.labels[this.chartData.labels.length - 1],
     ];
-    this.range = [this.min, this.lastDataYear];
-    this.completeDatasetWithPrevision();
+    this.range = [this.min, this.max];
     this.filteredChartData = JSON.parse(JSON.stringify(this.chartData));
+    this.completedChartData = JSON.parse(JSON.stringify(this.chartData));
   },
   components: {
     LineChart,
@@ -99,10 +104,22 @@ export default {
     chartData: {},
   },
   methods: {
+    displayEstimation() {
+      this.displayEstimationBtn = !this.displayEstimationBtn;
+      if (this.displayEstimationBtn) {
+        this.completeDatasetWithPrevision();
+        this.max = this.lastEstimatedYear;
+      } else {
+        const lastYear = +this.chartData.labels[this.chartData.labels.length - 1];
+        this.range[1] = lastYear;
+        this.max = lastYear;
+      }
+      this.filterChartData();
+    },
     filterChartData() {
       this.filteredChartData = JSON.parse(JSON.stringify(this.completedChartData));
-      for (let index = this.chartData.labels.length - 1; index >= 0; index -= 1) {
-        const value = this.chartData.labels[index];
+      for (let index = this.completedChartData.labels.length - 1; index >= 0; index -= 1) {
+        const value = this.completedChartData.labels[index];
 
         if (value < this.range[0] || value > this.range[1]) {
           this.filteredChartData?.labels.splice(index, 1);
@@ -115,15 +132,14 @@ export default {
       this.refresh = !this.refresh;
     },
     completeDatasetWithPrevision() {
-      console.log('oof', estimationTypes);
       this.completedChartData = {
         ...this.chartData,
       };
 
-      const completionLength = this.max - this.lastDataYear;
+      const completionLength = this.lastEstimatedYear - this.max;
       const futureYears = new Array(completionLength);
       for (let i = 0; i < completionLength; i += 1) {
-        futureYears[i] = this.lastDataYear + i + 1;
+        futureYears[i] = +this.max + i + 1;
       }
 
       this.completedChartData.labels = this.chartData.labels.concat(futureYears);
