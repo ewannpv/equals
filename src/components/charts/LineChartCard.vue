@@ -25,11 +25,18 @@
       </v-col>
     </v-row>
     <v-card-text>
-      <v-btn depressed @click="displayEstimation">
-        {{ displayEstimationBtn ? 'Cacher les prévisions' : 'Afficher les prévisions' }}
-      </v-btn>
+      <v-row>
+        <v-col md="6">
+          <v-btn depressed @click="displayEstimation">
+            {{ displayEstimationBtn ? 'Cacher les prévisions' : 'Afficher les prévisions' }}
+          </v-btn>
+        </v-col>
+
+        <v-col md="6" v-if="displayEstimationBtn">
+          <v-btn disabled elevation="2" outlined> {{ previsionInfo() }} </v-btn>
+        </v-col>
+      </v-row>
       <div v-if="displayEstimationBtn">
-        Ceci est une prévision
         <v-container>
           <v-row>
             <v-col md="6">
@@ -230,6 +237,9 @@ export default {
 
       this.selectedDataset = this.chartData.datasets[0].label;
       this.selectedEstimationType = this.getSelectedDataset().previsions.selectedType;
+    },
+    previsionInfo() {
+      return `prévisions à partir de ${this.chartData.labels[this.chartData.labels.length - 1]}`;
     },
     getSelectedDataset() {
       return this.completedChartData.datasets.find(
