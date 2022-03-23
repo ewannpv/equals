@@ -19,7 +19,7 @@
           md="6"
           class="d-flex"
         >
-          <LineChartCard :chartData="chartData" />
+          <BarChartCard :chartData="chartData" />
         </v-col>
       </v-row>
     </v-container>
@@ -27,12 +27,12 @@
 </template>
 
 <script>
-import LineChartCard from '@/components/charts/LineChartCard.vue';
+import BarChartCard from '@/components/charts/BarChartCard.vue';
 import ContainerLayout from '@/components/layout/ContainerLayout.vue';
 import { getSocial } from '@/utils/service';
 
 export default {
-  components: { ContainerLayout, LineChartCard },
+  components: { ContainerLayout, BarChartCard },
   data() {
     return {
       chartsData: {},
