@@ -31,9 +31,8 @@
             {{ displayEstimationBtn ? 'Cacher les prévisions' : 'Afficher les prévisions' }}
           </v-btn>
         </v-col>
-
         <v-col md="6" v-if="displayEstimationBtn">
-          <v-btn disabled elevation="2" outlined> {{ previsionInfo() }} </v-btn>
+          <v-btn disabled elevation="2" outlined> {{ previsionsInfo() }} </v-btn>
         </v-col>
       </v-row>
       <div v-if="displayEstimationBtn">
@@ -238,7 +237,7 @@ export default {
       this.selectedDataset = this.chartData.datasets[0].label;
       this.selectedEstimationType = this.getSelectedDataset().previsions.selectedType;
     },
-    previsionInfo() {
+    previsionsInfo() {
       return `prévisions à partir de ${this.chartData.labels[this.chartData.labels.length - 1]}`;
     },
     getSelectedDataset() {
