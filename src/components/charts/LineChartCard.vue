@@ -36,6 +36,11 @@
         </v-col>
       </v-row>
       <div v-if="displayEstimationBtn">
+        Le mode prévision est activé.
+        Vous pouvez consulter les données prédictives de
+        {{+chartData.labels[chartData.labels.length - 1] + 1}} jusqu'à {{lastEstimatedYear}}.
+        Cette évolution a été estimée grâce à un modèle mathématique que vous pouvez également
+        reparamétrer pour étudier une évolution différente.
         <v-container>
           <v-row>
             <v-col md="6">
@@ -43,6 +48,7 @@
                 v-model="selectedDataset"
                 :items="completedChartData.datasets.map((dataset) => dataset.label)"
                 label="Selectionnez un dataset"
+                messages="Courbe à parametrer"
                 single-line
                 @change="onChangeSelectedDatasetForPrevision"
               ></v-select>
@@ -50,9 +56,39 @@
             <v-col md="6">
               <v-select
                 v-model="selectedEstimationType"
+                messages="Type de modèle"
                 @change="onChangeEstimationType"
                 :items="estimationTypes"
               ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col md="6">
+              Nous avons détecté que le modèle le plus proche des données effectives est de type
+              {{getSelectedDataset().previsions.bestType}} avec pour coefficients a =
+              {{getSelectedDataset().previsions[getSelectedDataset().previsions.bestType].bestA}}
+              et b =
+              {{getSelectedDataset().previsions[getSelectedDataset().previsions.bestType].bestB}}
+
+              <v-btn depressed @click="resetPrevisions">
+                Restaurer les meilleurs paramètres
+              </v-btn>
+            </v-col>
+            <v-col md="6">
+              <div>
+                La formule utilisée pour estimer les données futures est <br/>
+                {{getCurrentFormula()}}
+              </div>
+              <v-text-field
+                v-model="textFieldCoefficientA"
+                prefix="a = "
+                :rules="[validateCoefficientInput]"
+                @change="onChangeTextCoefficientA"/>
+              <v-text-field
+                v-model="textFieldCoefficientB"
+                prefix="b = "
+                :rules="[validateCoefficientInput]"
+                @change="onChangeTextCoefficientB"/>
             </v-col>
           </v-row>
         </v-container>
@@ -81,7 +117,7 @@ export default {
   data() {
     return {
       displayEstimationBtn: false,
-      estimationTypes,
+      estimationTypes: Object.values(estimationTypes),
       refresh: false,
       min: 0,
       max: 0,
@@ -91,6 +127,8 @@ export default {
       filteredChartData: undefined,
       selectedDataset: undefined,
       selectedEstimationType: undefined,
+      textFieldCoefficientA: '',
+      textFieldCoefficientB: '',
     };
   },
   mounted() {
@@ -179,30 +217,30 @@ export default {
         let bestType;
         switch (minDeviation) {
           case linearDeviation:
-            bestType = estimationTypes.at(0);
+            bestType = estimationTypes.LINEAR;
             estimatedValues = getEstimatedValuesFromCoefficients(
               futureYears,
               linearValues.a,
               linearValues.b,
-              estimationTypes[0],
+              estimationTypes.LINEAR,
             );
             break;
           case expDeviation:
-            bestType = estimationTypes.at(1);
+            bestType = estimationTypes.EXPONENTIAL;
             estimatedValues = getEstimatedValuesFromCoefficients(
               futureYears,
               expValues.a,
               expValues.b,
-              estimationTypes[1],
+              estimationTypes.EXPONENTIAL,
             );
             break;
           case logDeviation:
-            bestType = estimationTypes.at(2);
+            bestType = estimationTypes.LOGARITHMIC;
             estimatedValues = getEstimatedValuesFromCoefficients(
               futureYears,
               logValues.a,
               logValues.b,
-              estimationTypes[2],
+              estimationTypes.LOGARITHMIC,
             );
             break;
           default:
@@ -213,29 +251,35 @@ export default {
           ...dataset,
           data: dataset.data.concat(estimatedValues),
           previsions: {
-            bestType,
-            selectedType: bestType,
-            linearCoefficients: {
-              a: linearValues.a,
-              b: linearValues.b,
-              standardSquaredDeviation: linearDeviation,
+            bestType, // type of closest model to the effective data
+            selectedType: bestType, // current selected type for prevision
+            [estimationTypes.LINEAR]: {
+              bestA: linearValues.a, // coefficient a for the closest linear model computed
+              currentA: linearValues.a, // current coefficient a of linear model for prevision
+              bestB: linearValues.b,
+              currentB: linearValues.b,
             },
-            expCoefficients: {
-              a: expValues.a,
-              b: expValues.b,
-              standardSquaredDeviation: expDeviation,
+            [estimationTypes.EXPONENTIAL]: {
+              bestA: expValues.a,
+              currentA: expValues.a,
+              bestB: expValues.b,
+              currentB: expValues.b,
             },
-            logCoefficients: {
-              a: logValues.a,
-              b: logValues.b,
-              standardSquaredDeviation: logDeviation,
+            [estimationTypes.LOGARITHMIC]: {
+              bestA: logValues.a,
+              currentA: logValues.a,
+              bestB: logValues.b,
+              currentB: logValues.b,
             },
           },
         };
       });
 
       this.selectedDataset = this.chartData.datasets[0].label;
-      this.selectedEstimationType = this.getSelectedDataset().previsions.selectedType;
+      const { previsions } = this.getSelectedDataset();
+      this.selectedEstimationType = previsions.selectedType;
+      this.textFieldCoefficientA = previsions[previsions.selectedType].bestA;
+      this.textFieldCoefficientB = previsions[previsions.selectedType].bestB;
     },
     previsionsInfo() {
       return `prévisions à partir de ${this.chartData.labels[this.chartData.labels.length - 1]}`;
@@ -246,56 +290,99 @@ export default {
       );
     },
     onChangeSelectedDatasetForPrevision() {
-      this.selectedEstimationType = this.getSelectedDataset()?.previsions.selectedType;
+      const { previsions } = this.getSelectedDataset();
+      this.selectedEstimationType = previsions.selectedType;
+      this.textFieldCoefficientA = previsions[previsions.selectedType].currentA;
+      this.textFieldCoefficientB = previsions[previsions.selectedType].currentB;
     },
     onChangeEstimationType() {
-      const dataset = this.getSelectedDataset();
-      if (dataset.previsions.selectedType !== this.selectedEstimationType) {
+      const { previsions } = this.getSelectedDataset();
+      if (previsions.selectedType !== this.selectedEstimationType) {
         /* model for dataset changed -> update computed predicted data */
-        dataset.previsions.selectedType = this.selectedEstimationType;
+        previsions.selectedType = this.selectedEstimationType;
+        this.textFieldCoefficientA = previsions[previsions.selectedType].currentA;
+        this.textFieldCoefficientB = previsions[previsions.selectedType].currentB;
         this.updateEstimationData();
       }
+    },
+    onChangeTextCoefficientA(val) {
+      // accept comma and dot as decimal separator
+      const number = parseFloat(val.replace(',', '.'));
+      const { previsions } = this.getSelectedDataset();
+
+      if (Number.isNaN(number)) {
+        // invalid input
+        this.textFieldCoefficientA = previsions[previsions.selectedType].currentA.toString();
+      } else {
+        previsions[previsions.selectedType].currentA = number;
+        this.updateEstimationData();
+      }
+    },
+    onChangeTextCoefficientB(val) {
+      const number = parseFloat(val.replace(',', '.'));
+      const { previsions } = this.getSelectedDataset();
+
+      if (Number.isNaN(number)) {
+        // invalid input
+        this.textFieldCoefficientB = previsions[previsions.selectedType].currentB.toString();
+      } else {
+        previsions[previsions.selectedType].currentB = number;
+        this.updateEstimationData();
+      }
+    },
+    validateCoefficientInput(val) {
+      return !Number.isNaN(parseFloat(val)) || 'Ce champ doit être un nombre';
     },
     updateEstimationData() {
       const dataset = this.getSelectedDataset();
       const futureYears = this.getArrayOfYearsToPredict();
-      let newValues;
-      switch (dataset.previsions.selectedType) {
-        case estimationTypes[0]:
-          newValues = getEstimatedValuesFromCoefficients(
-            futureYears,
-            dataset.previsions.linearCoefficients.a,
-            dataset.previsions.linearCoefficients.b,
-            estimationTypes[0],
-          );
-          break;
-        case estimationTypes[1]:
-          newValues = getEstimatedValuesFromCoefficients(
-            futureYears,
-            dataset.previsions.expCoefficients.a,
-            dataset.previsions.expCoefficients.b,
-            estimationTypes[1],
-          );
-          break;
-        case estimationTypes[2]:
-          newValues = getEstimatedValuesFromCoefficients(
-            futureYears,
-            dataset.previsions.logCoefficients.a,
-            dataset.previsions.logCoefficients.b,
-            estimationTypes[2],
-          );
-          break;
-        default:
-          break;
-      }
+
+      // get current coefficients
+      const { currentA, currentB } = dataset.previsions[dataset.previsions.selectedType];
+      const newValues = getEstimatedValuesFromCoefficients(
+        futureYears,
+        currentA,
+        currentB,
+        dataset.previsions.selectedType,
+      );
 
       dataset.data.splice(
         dataset.data.length - futureYears.length,
         futureYears.length,
         ...newValues,
       );
-      console.log(dataset.data);
       this.filterChartData();
+    },
+    getCurrentFormula() {
+      switch (this.selectedEstimationType) {
+        case estimationTypes.LINEAR:
+          return 'y = a X x + b';
+        case estimationTypes.EXPONENTIAL:
+          return 'y = e^b X e^ax';
+        case estimationTypes.LOGARITHMIC:
+          return 'y = a X ln(x) + b';
+        default:
+          return '';
+      }
+    },
+    resetPrevisions() {
+      const { previsions } = this.getSelectedDataset();
+
+      // auto select best estimation type
+      previsions.selectedType = previsions.bestType;
+      this.selectedEstimationType = previsions.bestType;
+
+      // reset current coefficients
+      Object.values(estimationTypes).forEach((type) => {
+        const coeffs = previsions[type];
+        coeffs.currentA = coeffs.bestA;
+        coeffs.currentB = coeffs.bestB;
+      });
+
+      this.textFieldCoefficientA = previsions[previsions.bestType].bestA;
+      this.textFieldCoefficientB = previsions[previsions.bestType].bestB;
+
+      this.updateEstimationData();
     },
   },
 };

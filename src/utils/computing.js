@@ -1,4 +1,8 @@
-const estimationTypes = ['Linéaire', 'Exponentielle', 'Logarithmique'];
+const estimationTypes = Object.freeze({
+  LINEAR: 'Linéaire',
+  EXPONENTIAL: 'Exponentielle',
+  LOGARITHMIC: 'Logarithmique',
+});
 
 // compute best fit line parameters using the least squares method
 const bestFitLine = (valuesX, valuesY) => {
@@ -63,13 +67,13 @@ const bestFitLineLog = (valuesX, valuesY) => {
 const getEstimatedValuesFromCoefficients = (valuesX, a, b, type) => {
   let mapFunction;
   switch (type) {
-    case estimationTypes[0]:
+    case estimationTypes.LINEAR:
       mapFunction = (x) => x * a + b;
       break;
-    case estimationTypes[1]:
+    case estimationTypes.EXPONENTIAL:
       mapFunction = (x) => Math.exp(a * x) * Math.exp(b);
       break;
-    case estimationTypes[2]:
+    case estimationTypes.LOGARITHMIC:
       mapFunction = (x) => a * Math.log(x) + b;
       break;
     default:
@@ -87,7 +91,7 @@ const getEstimatedValuesFromCoefficients = (valuesX, a, b, type) => {
 
 const getBestFitLineValues = (valuesX, valuesY) => {
   const { a, b } = bestFitLine(valuesX, valuesY);
-  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, estimationTypes[0]);
+  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, estimationTypes.LINEAR);
 
   return {
     a,
@@ -98,7 +102,12 @@ const getBestFitLineValues = (valuesX, valuesY) => {
 
 const getBestFitLineExpValues = (valuesX, valuesY) => {
   const { a, b } = bestFitLineExp(valuesX, valuesY);
-  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, estimationTypes[1]);
+  const resultValuesY = getEstimatedValuesFromCoefficients(
+    valuesX,
+    a,
+    b,
+    estimationTypes.EXPONENTIAL,
+  );
 
   return {
     a,
@@ -109,7 +118,12 @@ const getBestFitLineExpValues = (valuesX, valuesY) => {
 
 const getBestFitLineLogValues = (valuesX, valuesY) => {
   const { a, b } = bestFitLineLog(valuesX, valuesY);
-  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, estimationTypes[2]);
+  const resultValuesY = getEstimatedValuesFromCoefficients(
+    valuesX,
+    a,
+    b,
+    estimationTypes.LOGARITHMIC,
+  );
 
   return {
     a,
