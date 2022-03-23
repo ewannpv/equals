@@ -1,3 +1,5 @@
+const estimationTypes = ['Linéaire', 'Exponentielle', 'Logarithmique'];
+
 // compute best fit line parameters using the least squares method
 const bestFitLine = (valuesX, valuesY) => {
   let sumX = 0;
@@ -61,16 +63,17 @@ const bestFitLineLog = (valuesX, valuesY) => {
 const getEstimatedValuesFromCoefficients = (valuesX, a, b, type) => {
   let mapFunction;
   switch (type) {
-    case 'linear':
+    case estimationTypes[0]:
       mapFunction = (x) => x * a + b;
       break;
-    case 'exponential':
+    case estimationTypes[1]:
       mapFunction = (x) => Math.exp(a * x) * Math.exp(b);
       break;
-    case 'logarithmic':
+    case estimationTypes[2]:
       mapFunction = (x) => a * Math.log(x) + b;
       break;
     default:
+      console.log(type);
       throw new Error('unsupported parameter type');
   }
 
@@ -84,28 +87,34 @@ const getEstimatedValuesFromCoefficients = (valuesX, a, b, type) => {
 
 const getBestFitLineValues = (valuesX, valuesY) => {
   const { a, b } = bestFitLine(valuesX, valuesY);
-  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, 'linear');
+  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, estimationTypes[0]);
 
   return {
-    a, b, resultValuesY,
+    a,
+    b,
+    resultValuesY,
   };
 };
 
 const getBestFitLineExpValues = (valuesX, valuesY) => {
   const { a, b } = bestFitLineExp(valuesX, valuesY);
-  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, 'exponential');
+  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, estimationTypes[1]);
 
   return {
-    a, b, resultValuesY,
+    a,
+    b,
+    resultValuesY,
   };
 };
 
 const getBestFitLineLogValues = (valuesX, valuesY) => {
   const { a, b } = bestFitLineLog(valuesX, valuesY);
-  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, 'logarithmic');
+  const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, estimationTypes[2]);
 
   return {
-    a, b, resultValuesY,
+    a,
+    b,
+    resultValuesY,
   };
 };
 
@@ -123,6 +132,7 @@ const getMeanSquaredDeviation = (values, estimatimations) => {
 };
 
 module.exports = {
+  estimationTypes,
   getBestFitLineValues,
   getBestFitLineExpValues,
   getBestFitLineLogValues,
