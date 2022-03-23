@@ -21,3 +21,4 @@ const fetchApi = (route, method, body) => {
 export const getEconomyCharts = () => fetchApi('/economy/charts', 'GET');
 export const getSocialCharts = () => fetchApi('/social/charts', 'GET');
 export const getTravail = () => fetchApi('/travail', 'GET');
+export const getSocial = () => fetchApi('/social', 'GET');

@@ -12,14 +12,14 @@
     </v-card-text>
     <v-container fluid class="px-3">
       <v-row color="white">
-        <v-col cols="12" sm="6" class="d-flex">
-          <SocialMariage />
-        </v-col>
-        <v-col cols="12" sm="3" class="d-flex">
-          <SocialMariage />
-        </v-col>
-        <v-col cols="12" sm="3" class="d-flex">
-          <SocialMariage />
+        <v-col
+          v-for="(chartData, index) in chartsData"
+          :key="index"
+          cols="12"
+          md="6"
+          class="d-flex"
+        >
+          <GenericChartCard :chartData="chartData" />
         </v-col>
       </v-row>
     </v-container>
@@ -27,11 +27,27 @@
 </template>
 
 <script>
-import SocialMariage from '@/components/Social/SocialMariage.vue';
+import GenericChartCard from '@/components/GenericChartCard.vue';
 import ContainerLayout from '@/components/layout/ContainerLayout.vue';
+import { getSocial } from '@/utils/service';
 
 export default {
-  components: { SocialMariage, ContainerLayout },
+  components: { ContainerLayout, GenericChartCard },
+  data() {
+    return {
+      chartsData: {},
+      loaded: false,
+    };
+  },
+  methods: {
+    setChartsData(data) {
+      this.chartsData = data;
+      this.loaded = true;
+    },
+  },
+  mounted() {
+    getSocial().then((data) => this.setChartsData(data));
+  },
 };
 </script>
 
