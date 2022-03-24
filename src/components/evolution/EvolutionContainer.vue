@@ -6,6 +6,9 @@
         <span class="text-h3">Evolution</span>
       </v-card-title>
       <v-card-text>
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ex, quod, mollitia corrupti minima
+        sint magni consequuntur assumenda nihil ad exercitationem distinctio sunt possimus adipisci
+        iure doloremque consectetur et eligendi hic?
         <v-container fluid>
           <v-row justify="center">
             <v-col cols="12" md="4">
@@ -18,7 +21,7 @@
               <EvolutionCard />
             </v-col>
           </v-row>
-          <div class="ma-3">
+          <div class="my-3">
             <v-row class="text-h5"> Options </v-row>
             <v-row>
               <v-col md="6" cols="12">
