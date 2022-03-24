@@ -2,6 +2,7 @@
   <v-app id="inspire">
     <TopNavBar />
     <v-main class="pt-0">
+      <EvolutionContainer />
       <EconomyContainer />
       <SocialContainer />
     </v-main>
@@ -10,14 +11,16 @@
 
 <script>
 import TopNavBar from '@/components/TopNavBar.vue';
-import EconomyContainer from '@/components/Economy/EconomyContainer.vue';
-import SocialContainer from '@/components/Social/SocialContainer.vue';
+import EconomyContainer from '@/components/economy/EconomyContainer.vue';
+import SocialContainer from '@/components/social/SocialContainer.vue';
+import EvolutionContainer from '@/components/evolution/EvolutionContainer.vue';
 
 export default {
   components: {
     TopNavBar,
     EconomyContainer,
     SocialContainer,
+    EvolutionContainer,
   },
 };
 </script>
