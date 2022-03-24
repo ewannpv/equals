@@ -80,7 +80,8 @@
                 v-model="textFieldCoefficientA"
                 prefix="a = "
                 :rules="[validateCoefficientInput]"
-                @change="onChangeTextCoefficientA"/>
+                @change="onChangeTextCoefficientA"
+              />
               <v-container>
                 <v-row>
                   <v-text-field
@@ -88,13 +89,11 @@
                     prefix="b = "
                     :rules="[validateCoefficientInput]"
                     @change="onChangeTextCoefficientB"
-                    :disabled="switchAutoB"/>
+                    :disabled="switchAutoB"
+                  />
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <div
-                        v-bind="attrs"
-                        v-on="on"
-                      >
+                      <div v-bind="attrs" v-on="on">
                         <v-switch
                           v-model="switchAutoB"
                           label="auto"
@@ -102,8 +101,10 @@
                         />
                       </div>
                     </template>
-                    <div>Mettre automatiquement à jour le coefficient b en fonction de a pour
-                      positionner la courbe sur les dernières données connues</div>
+                    <div>
+                      Mettre automatiquement à jour le coefficient b en fonction de a pour
+                      positionner la courbe sur les dernières données connues
+                    </div>
                   </v-tooltip>
                 </v-row>
               </v-container>
@@ -126,7 +127,8 @@ import {
   estimationTypes,
   getBestFitLineExpValues,
   getBestFitLineLogValues,
-  getBestFitLineValues, getCoefficientBToMatchValue,
+  getBestFitLineValues,
+  getCoefficientBToMatchValue,
   getEstimatedValuesFromCoefficients,
   getMeanSquaredDeviation,
 } from '@/utils/computing';
@@ -155,7 +157,15 @@ export default {
       this.chartData.labels[0],
       this.chartData.labels[this.chartData.labels.length - 1],
     ];
-    this.range = [this.min, this.max];
+    let index = 0;
+    let minValue = 0;
+
+    do {
+      minValue = this.chartData.labels[index];
+      index += 1;
+    } while (minValue < 2000 && this.chartData.labels[index]);
+    this.range = [minValue, this.max];
+
     this.filteredChartData = JSON.parse(JSON.stringify(this.chartData));
     this.completedChartData = JSON.parse(JSON.stringify(this.chartData));
   },
@@ -380,12 +390,14 @@ export default {
         );
         this.textFieldCoefficientB = previsions[previsions.selectedType].currentB;
 
-        console.log(getEstimatedValuesFromCoefficients(
-          [this.chartData.labels[lastDataIndex]],
-          previsions[previsions.selectedType].currentA,
-          previsions[previsions.selectedType].currentB,
-          previsions.selectedType,
-        ));
+        console.log(
+          getEstimatedValuesFromCoefficients(
+            [this.chartData.labels[lastDataIndex]],
+            previsions[previsions.selectedType].currentA,
+            previsions[previsions.selectedType].currentB,
+            previsions.selectedType,
+          ),
+        );
         console.log(dataset.data[lastDataIndex]);
         this.updateEstimationData();
       }
