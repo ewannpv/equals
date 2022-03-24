@@ -25,20 +25,19 @@
       </v-col>
     </v-row>
     <v-card-text>
-      <v-row>
+      <v-row class="pb-2">
         <v-col md="6">
           <v-btn depressed @click="displayEstimation">
             {{ displayEstimationBtn ? 'Cacher les prévisions' : 'Afficher les prévisions' }}
           </v-btn>
         </v-col>
         <v-col md="6" v-if="displayEstimationBtn">
-          <v-btn disabled elevation="2" outlined> {{ previsionsInfo() }} </v-btn>
+          <v-btn outlined color="warning"> {{ previsionsInfo() }} </v-btn>
         </v-col>
       </v-row>
       <div v-if="displayEstimationBtn">
-        Le mode prévision est activé.
-        Vous pouvez consulter les données prédictives de
-        {{+chartData.labels[chartData.labels.length - 1] + 1}} jusqu'à {{lastEstimatedYear}}.
+        Le mode prévision est activé. Vous pouvez consulter les données prédictives de
+        {{ +chartData.labels[chartData.labels.length - 1] + 1 }} jusqu'à {{ lastEstimatedYear }}.
         Cette évolution a été estimée grâce à un modèle mathématique que vous pouvez également
         reparamétrer pour étudier une évolution différente.
         <v-container>
@@ -65,30 +64,30 @@
           <v-row>
             <v-col md="6">
               Nous avons détecté que le modèle le plus proche des données effectives est de type
-              {{getSelectedDataset().previsions.bestType}} avec pour coefficients a =
-              {{getSelectedDataset().previsions[getSelectedDataset().previsions.bestType].bestA}}
+              {{ getSelectedDataset().previsions.bestType }} avec pour coefficients a =
+              {{ getSelectedDataset().previsions[getSelectedDataset().previsions.bestType].bestA }}
               et b =
-              {{getSelectedDataset().previsions[getSelectedDataset().previsions.bestType].bestB}}
+              {{ getSelectedDataset().previsions[getSelectedDataset().previsions.bestType].bestB }}
 
-              <v-btn depressed @click="resetPrevisions">
-                Restaurer les meilleurs paramètres
-              </v-btn>
+              <v-btn depressed @click="resetPrevisions"> Restaurer les meilleurs paramètres </v-btn>
             </v-col>
             <v-col md="6">
               <div>
-                La formule utilisée pour estimer les données futures est <br/>
-                {{getCurrentFormula()}}
+                La formule utilisée pour estimer les données futures est <br />
+                {{ getCurrentFormula() }}
               </div>
               <v-text-field
                 v-model="textFieldCoefficientA"
                 prefix="a = "
                 :rules="[validateCoefficientInput]"
-                @change="onChangeTextCoefficientA"/>
+                @change="onChangeTextCoefficientA"
+              />
               <v-text-field
                 v-model="textFieldCoefficientB"
                 prefix="b = "
                 :rules="[validateCoefficientInput]"
-                @change="onChangeTextCoefficientB"/>
+                @change="onChangeTextCoefficientB"
+              />
             </v-col>
           </v-row>
         </v-container>
@@ -282,7 +281,7 @@ export default {
       this.textFieldCoefficientB = previsions[previsions.selectedType].bestB;
     },
     previsionsInfo() {
-      return `prévisions à partir de ${this.chartData.labels[this.chartData.labels.length - 1]}`;
+      return `Prévisions à partir de ${this.chartData.labels[this.chartData.labels.length - 1]}`;
     },
     getSelectedDataset() {
       return this.completedChartData.datasets.find(
