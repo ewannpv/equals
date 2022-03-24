@@ -1,5 +1,5 @@
 <template>
-  <ContainerLayout :background="require('@/assets/images/evolution.jpg')" class="pa-3">
+  <ContainerLayout color="#97d3d3" class="pa-3">
     <CardLayout>
       <v-card-title>
         <v-icon large left> mdi-cash-multiple </v-icon>
