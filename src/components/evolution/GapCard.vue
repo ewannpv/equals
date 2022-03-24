@@ -3,16 +3,10 @@
     <v-card-text>
       <v-col cols="12">
         <v-row justify="center" class="text-h4"> {{ title }} </v-row>
-        <v-row justify="center">
-          <v-progress-circular
-            :rotate="360"
-            :size="100"
-            :width="15"
-            :value="displayedValue"
-            color="teal"
-          >
-            {{ displayedValue }}
-          </v-progress-circular>
+        <v-row justify="center" align="center">
+          <div class="text-h4">
+            {{ displayedValue }} <v-icon> mdi-arrow-right-bold </v-icon> {{ +value + 10 }}
+          </div>
         </v-row>
         <v-row justify="center">
           {{ description }}
@@ -30,11 +24,8 @@ export default {
   components: { CardLayout },
   data() {
     return {
-      displayedValue: 0,
+      displayedValue: this.value,
     };
-  },
-  mounted() {
-    this.displayedValue = this.value;
   },
 };
 </script>

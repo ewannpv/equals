@@ -11,14 +11,26 @@
         iure doloremque consectetur et eligendi hic?
         <v-container fluid>
           <v-row justify="center">
-            <v-col cols="12" md="4">
-              <EvolutionCard />
+            <v-col cols="12" md="4" class="d-flex">
+              <EvolutionCard
+                title="Evolution de la Femme"
+                description="lorem ipsum..."
+                :value="parseInt(30, 10)"
+              />
             </v-col>
-            <v-col cols="12" md="4">
-              <EvolutionCard />
+            <v-col cols="12" md="4" class="d-flex">
+              <GapCard
+                title="Evolution ecart Homme / Femme"
+                description="lorem ipsum..."
+                :value="parseInt(30, 10)"
+              />
             </v-col>
-            <v-col cols="12" md="4">
-              <EvolutionCard />
+            <v-col cols="12" md="4" class="d-flex">
+              <EvolutionCard
+                title="Nombre d'annee avant equite"
+                description="lorem ipsum..."
+                :value="parseInt(30, 10)"
+              />
             </v-col>
           </v-row>
           <div class="my-3">
@@ -31,7 +43,6 @@
                   :min="min"
                   hide-details
                   class="align-center"
-                  @end="filterChartData"
                 >
                   <template v-slot:prepend>
                     {{ range[0] }}
@@ -53,9 +64,15 @@
 import ContainerLayout from '@/components/layout/ContainerLayout.vue';
 import CardLayout from '@/components/layout/CardLayout.vue';
 import EvolutionCard from '@/components/evolution/EvolutionCard.vue';
+import GapCard from '@/components/evolution/GapCard.vue';
 
 export default {
-  components: { ContainerLayout, CardLayout, EvolutionCard },
+  components: {
+    ContainerLayout,
+    CardLayout,
+    EvolutionCard,
+    GapCard,
+  },
   data() {
     return {
       min: 2000,
