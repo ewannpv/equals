@@ -89,6 +89,23 @@ const getEstimatedValuesFromCoefficients = (valuesX, a, b, type) => {
   return resultValuesY;
 };
 
+const getCoefficientBToMatchValue = (valueX, valueY, a, type) => {
+  switch (type) {
+    case estimationTypes.LINEAR:
+      // y = ax + b -> b = y - ax
+      return valueY - a * valueX;
+    case estimationTypes.EXPONENTIAL:
+      // y = e^ax * e^b -> e^b = y / e^ax -> b = ln(y / e^ax) -> b = ln(y) - ax
+      return Math.log(valueY) - a * valueX;
+    case estimationTypes.LOGARITHMIC:
+      // y = a * ln(x) + b -> b = y - a * ln(x)
+      return valueY - a * Math.log(valueX);
+    default:
+      console.log(type);
+      throw new Error('unsupported parameter type');
+  }
+};
+
 const getBestFitLineValues = (valuesX, valuesY) => {
   const { a, b } = bestFitLine(valuesX, valuesY);
   const resultValuesY = getEstimatedValuesFromCoefficients(valuesX, a, b, estimationTypes.LINEAR);
@@ -152,4 +169,5 @@ module.exports = {
   getBestFitLineLogValues,
   getMeanSquaredDeviation,
   getEstimatedValuesFromCoefficients,
+  getCoefficientBToMatchValue,
 };

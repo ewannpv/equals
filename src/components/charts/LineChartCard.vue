@@ -80,14 +80,33 @@
                 v-model="textFieldCoefficientA"
                 prefix="a = "
                 :rules="[validateCoefficientInput]"
-                @change="onChangeTextCoefficientA"
-              />
-              <v-text-field
-                v-model="textFieldCoefficientB"
-                prefix="b = "
-                :rules="[validateCoefficientInput]"
-                @change="onChangeTextCoefficientB"
-              />
+                @change="onChangeTextCoefficientA"/>
+              <v-container>
+                <v-row>
+                  <v-text-field
+                    v-model="textFieldCoefficientB"
+                    prefix="b = "
+                    :rules="[validateCoefficientInput]"
+                    @change="onChangeTextCoefficientB"
+                    :disabled="switchAutoB"/>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-switch
+                          v-model="switchAutoB"
+                          label="auto"
+                          @change="onChangeSwitchAutoB"
+                        />
+                      </div>
+                    </template>
+                    <div>Mettre automatiquement à jour le coefficient b en fonction de a pour
+                      positionner la courbe sur les dernières données connues</div>
+                  </v-tooltip>
+                </v-row>
+              </v-container>
             </v-col>
           </v-row>
         </v-container>
@@ -107,7 +126,7 @@ import {
   estimationTypes,
   getBestFitLineExpValues,
   getBestFitLineLogValues,
-  getBestFitLineValues,
+  getBestFitLineValues, getCoefficientBToMatchValue,
   getEstimatedValuesFromCoefficients,
   getMeanSquaredDeviation,
 } from '@/utils/computing';
@@ -128,6 +147,7 @@ export default {
       selectedEstimationType: undefined,
       textFieldCoefficientA: '',
       textFieldCoefficientB: '',
+      switchAutoB: false,
     };
   },
   mounted() {
@@ -257,18 +277,21 @@ export default {
               currentA: linearValues.a, // current coefficient a of linear model for prevision
               bestB: linearValues.b,
               currentB: linearValues.b,
+              autoB: false, // auto compute coefficient b to match last dataset value
             },
             [estimationTypes.EXPONENTIAL]: {
               bestA: expValues.a,
               currentA: expValues.a,
               bestB: expValues.b,
               currentB: expValues.b,
+              autoB: false,
             },
             [estimationTypes.LOGARITHMIC]: {
               bestA: logValues.a,
               currentA: logValues.a,
               bestB: logValues.b,
               currentB: logValues.b,
+              autoB: false,
             },
           },
         };
@@ -293,6 +316,7 @@ export default {
       this.selectedEstimationType = previsions.selectedType;
       this.textFieldCoefficientA = previsions[previsions.selectedType].currentA;
       this.textFieldCoefficientB = previsions[previsions.selectedType].currentB;
+      this.switchAutoB = previsions[previsions.selectedType].autoB;
     },
     onChangeEstimationType() {
       const { previsions } = this.getSelectedDataset();
@@ -301,19 +325,32 @@ export default {
         previsions.selectedType = this.selectedEstimationType;
         this.textFieldCoefficientA = previsions[previsions.selectedType].currentA;
         this.textFieldCoefficientB = previsions[previsions.selectedType].currentB;
+        this.switchAutoB = previsions[previsions.selectedType].autoB;
         this.updateEstimationData();
       }
     },
     onChangeTextCoefficientA(val) {
       // accept comma and dot as decimal separator
       const number = parseFloat(val.replace(',', '.'));
-      const { previsions } = this.getSelectedDataset();
+      const dataset = this.getSelectedDataset();
+      const { previsions } = dataset;
 
       if (Number.isNaN(number)) {
         // invalid input
         this.textFieldCoefficientA = previsions[previsions.selectedType].currentA.toString();
       } else {
         previsions[previsions.selectedType].currentA = number;
+        if (this.switchAutoB) {
+          // auto update b
+          const lastDataIndex = this.chartData.labels.length - 1;
+          previsions[previsions.selectedType].currentB = getCoefficientBToMatchValue(
+            this.chartData.labels[lastDataIndex],
+            dataset.data[lastDataIndex], // last known value in this dataset,
+            number,
+            previsions.selectedType,
+          );
+          this.textFieldCoefficientB = previsions[previsions.selectedType].currentB;
+        }
         this.updateEstimationData();
       }
     },
@@ -326,6 +363,30 @@ export default {
         this.textFieldCoefficientB = previsions[previsions.selectedType].currentB.toString();
       } else {
         previsions[previsions.selectedType].currentB = number;
+        this.updateEstimationData();
+      }
+    },
+    onChangeSwitchAutoB() {
+      const dataset = this.getSelectedDataset();
+      const { previsions } = dataset;
+      previsions[previsions.selectedType].autoB = this.switchAutoB;
+      if (this.switchAutoB) {
+        const lastDataIndex = this.chartData.labels.length - 1;
+        previsions[previsions.selectedType].currentB = getCoefficientBToMatchValue(
+          this.chartData.labels[lastDataIndex],
+          dataset.data[lastDataIndex], // last known value in this dataset,
+          previsions[previsions.selectedType].currentA,
+          previsions.selectedType,
+        );
+        this.textFieldCoefficientB = previsions[previsions.selectedType].currentB;
+
+        console.log(getEstimatedValuesFromCoefficients(
+          [this.chartData.labels[lastDataIndex]],
+          previsions[previsions.selectedType].currentA,
+          previsions[previsions.selectedType].currentB,
+          previsions.selectedType,
+        ));
+        console.log(dataset.data[lastDataIndex]);
         this.updateEstimationData();
       }
     },
@@ -376,10 +437,12 @@ export default {
         const coeffs = previsions[type];
         coeffs.currentA = coeffs.bestA;
         coeffs.currentB = coeffs.bestB;
+        coeffs.autoB = false;
       });
 
       this.textFieldCoefficientA = previsions[previsions.bestType].bestA;
       this.textFieldCoefficientB = previsions[previsions.bestType].bestB;
+      this.switchAutoB = false;
 
       this.updateEstimationData();
     },
