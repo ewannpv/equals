@@ -84,31 +84,25 @@ const getLockedStatus = (treeView, id, range) => {
   return parseInt(nodeRange[0], 10) > range[0] || parseInt(nodeRange[1], 10) < range[1];
 };
 
-const updateNode = (parent, node, selectedItems, range) => {
+const updateNode = (parent, node, range) => {
   const newNode = node;
   if (!newNode) return null;
-  if (newNode.id) {
-    newNode.locked = getLockedStatus(parent, newNode.id, range);
-    if (newNode.locked) {
-      const index = selectedItems.indexOf(node.id);
-      if (index) selectedItems.splice(index, 1);
-    }
-  }
+  if (newNode.id) newNode.locked = getLockedStatus(parent, newNode.id, range);
+
   if (newNode.children) {
     newNode.children = node.children.map(
       (element) =>
         // eslint-disable-next-line implicit-arrow-linebreak
-        updateNode(parent, element, selectedItems, range),
+        updateNode(parent, element, range),
       // eslint-disable-next-line function-paren-newline
     );
   }
   return newNode;
 };
-export const updateTreeView = (treeView, selectedItems, range) => {
+export const updateTreeView = (treeView, range) => {
   const newTree = treeView;
-  newTree['0'] = updateNode(treeView, newTree['0'], selectedItems, range);
-  newTree['1'] = updateNode(treeView, newTree['1'], selectedItems, range);
-  console.log(selectedItems);
+  newTree['0'] = updateNode(treeView, newTree['0'], range);
+  newTree['1'] = updateNode(treeView, newTree['1'], range);
   return newTree;
 };
 

@@ -26,7 +26,7 @@
       :items="treeViewItems"
       :v-model="selectedItems"
       @input="onUpdateItems"
-      selection-type="independent"
+      selection-type="leaf"
     />
   </div>
 </template>
@@ -54,18 +54,19 @@ export default {
   },
   methods: {
     onUpdateSlider() {
-      this.treeViewItems = updateTreeView(this.treeViewItems, this.selectedItems, this.range);
+      this.treeViewItems = updateTreeView(this.treeViewItems, this.range);
       console.log('2', getEvolution(this.treeViewItems, this.range, this.selectedItems));
     },
     onUpdateItems(items) {
-      this.treeViewItems = updateTreeView(this.treeViewItems, this.selectedItems, this.range);
+      this.treeViewItems = updateTreeView(this.treeViewItems, this.range);
       this.selectedItems = items;
       console.log(this.treeViewItems);
-      console.log('3', getEvolution(this.treeViewItems, this.selectedItems, this.range, items));
+      console.log(this.range);
+      console.log('3', getEvolution(this.treeViewItems, this.range, this.selectedItems));
     },
     async setTreeView() {
       const tmpTree = await generateTreeView();
-      this.treeViewItems = updateTreeView(tmpTree, this.selectedItems, this.range);
+      this.treeViewItems = updateTreeView(tmpTree, this.range);
       console.log('1', this.treeViewItems);
     },
   },
