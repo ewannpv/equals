@@ -13,12 +13,17 @@
         </v-range-slider>
       </v-col>
     </v-row>
-    <v-treeview selectable :items="treeViewItems" @input="updateOptions()"></v-treeview>
+    <v-treeview
+      selectable
+      :items="treeViewItems"
+      @input="updateOptions"
+      selection-type="independent"
+    />
   </div>
 </template>
 
 <script>
-import generateTreeView from '@/utils/treeView';
+import { getTreeViewFromNetwork } from '@/utils/service';
 
 export default {
   components: {},
@@ -32,13 +37,16 @@ export default {
       treeViewItems: [],
     };
   },
-  async mounted() {
+  mounted() {
     this.range = [this.min, this.max];
-    this.treeViewItems = await generateTreeView();
+    getTreeViewFromNetwork().then((data) => this.setTreeView(data));
   },
   methods: {
     updateOptions() {
-      console.log(this.treeViewItems);
+      console.log('Toto');
+    },
+    setTreeView(data) {
+      this.treeViewItems = data;
     },
   },
 };
