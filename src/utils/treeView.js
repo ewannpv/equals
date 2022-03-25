@@ -1,11 +1,12 @@
-import { getTravail, getSocial } from '@/utils/service';
+import { getSocial, getTravail } from '@/utils/service';
 
+/* eslint-disable operator-linebreak */
 const treeViewItems = [
   {
     id: 1,
     name: 'Economie :',
     children: [
-      { id: 2, name: "Nombre d'hommes et de femmes de 15 à 64 ans actives (1975 à 2021)" },
+      { id: 2, name: "Nombre d'hommeawaits et de femmes de 15 à 64 ans actives (1975 à 2021)" },
       {
         id: 3,
         name: 'Ecart de salaire (1995 à 2019)',
@@ -40,15 +41,70 @@ const treeViewItems = [
   },
 ];
 
-const generateTreeView = async () => {
+export const generateTreeView = async () => {
+  const dataEconomy = await getTravail();
+  const dataSocial = await getSocial();
   const treeView = treeViewItems;
-  getTravail().then((data) => {
-    console.log(data);
-  });
-  getSocial().then((data) => {
-    console.log(data);
-  });
+  treeView.dataEconomy = dataEconomy;
+  treeView.dataSocial = dataSocial;
   return treeView;
 };
 
-export default generateTreeView;
+const getPercentage = (dataset, labels, range) => {
+  const labelStart = labels[0];
+  const labelEnd = labels[labels.length - 1];
+  if (labelStart > range[0] || labelEnd < range[1]) return 0;
+
+  const indexStart = labels.indexOf(range[0].toString());
+  const indexEnd = labels.indexOf(range[1].toString());
+  if (indexStart < 0 || indexEnd < 0) return 0;
+
+  return ((dataset.data[indexEnd] - dataset.data[indexStart]) / dataset.data[indexStart]) * 100;
+};
+
+const getPercentageDifference = (dataset, labels, range) => {
+  const labelStart = labels[0];
+  const labelEnd = labels[labels.length - 1];
+  if (labelStart > range[0] || labelEnd < range[1]) return 0;
+
+  const indexStart = labels.indexOf(range[0].toString());
+  const indexEnd = labels.indexOf(range[1].toString());
+  if (indexStart < 0 || indexEnd < 0) return 0;
+
+  return dataset.data[indexStart] - dataset.data[indexEnd];
+};
+
+export const getEvolution = (treeView, range, items) => {
+  console.log(treeView);
+
+  const elements = [];
+  items.forEach((element) => {
+    switch (element) {
+      case 2:
+        elements.push(
+          getPercentage(treeView.dataEconomy[0].datasets[0], treeView.dataEconomy[0].labels, range),
+        );
+        break;
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+        elements.push(
+          getPercentageDifference(
+            treeView.dataEconomy[1].datasets[element - 4],
+            treeView.dataEconomy[1].labels,
+            range,
+          ),
+        );
+        break;
+      default:
+        break;
+    }
+  });
+  console.log('elements: ', elements);
+  const sumElements = elements.reduce(
+    (previousValue, currentValue) => previousValue + currentValue,
+    0,
+  );
+  return sumElements / elements.length;
+};

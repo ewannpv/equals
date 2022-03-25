@@ -3,7 +3,14 @@
     <v-row class="text-h5"> Options </v-row>
     <v-row>
       <v-col md="6" cols="12">
-        <v-range-slider v-model="range" :max="max" :min="min" hide-details class="align-center">
+        <v-range-slider
+          v-model="range"
+          :max="max"
+          :min="min"
+          @input="onUpdateSlider"
+          hide-details
+          class="align-center"
+        >
           <template v-slot:prepend>
             {{ range[0] }}
           </template>
@@ -16,7 +23,7 @@
     <v-treeview
       selectable
       :items="treeViewItems"
-      @input="updateOptions"
+      @input="onUpdateItems"
       selection-type="independent"
     />
   </div>
@@ -24,6 +31,7 @@
 
 <script>
 import { getTreeViewFromNetwork } from '@/utils/service';
+import { generateTreeView, getEvolution } from '@/utils/treeView';
 
 export default {
   components: {},
@@ -35,6 +43,7 @@ export default {
       lastEstimatedYear: 2050,
       range: [0, 0],
       treeViewItems: [],
+      selectedItems: [],
     };
   },
   mounted() {
@@ -42,11 +51,15 @@ export default {
     getTreeViewFromNetwork().then((data) => this.setTreeView(data));
   },
   methods: {
-    updateOptions() {
-      console.log('Toto');
+    onUpdateSlider() {
+      console.log(getEvolution(this.treeViewItems, this.range, this.selectedItems));
     },
-    setTreeView(data) {
-      this.treeViewItems = data;
+    onUpdateItems(items) {
+      this.selectedItems = items;
+      console.log(getEvolution(this.treeViewItems, this.range, items));
+    },
+    async setTreeView() {
+      this.treeViewItems = await generateTreeView();
     },
   },
 };
