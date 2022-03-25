@@ -13,14 +13,12 @@
         </v-range-slider>
       </v-col>
     </v-row>
-    <template>
-      <v-treeview selectable :items="treeViewItems" @input="updateOptions()"></v-treeview>
-    </template>
+    <v-treeview selectable :items="treeViewItems" @input="updateOptions()"></v-treeview>
   </div>
 </template>
 
 <script>
-import treeViewItems from '@/utils/treeViewItems';
+import generateTreeView from '@/utils/treeView';
 
 export default {
   components: {},
@@ -31,11 +29,12 @@ export default {
       max: 2020,
       lastEstimatedYear: 2050,
       range: [0, 0],
-      treeViewItems,
+      treeViewItems: [],
     };
   },
-  mounted() {
+  async mounted() {
     this.range = [this.min, this.max];
+    this.treeViewItems = await generateTreeView();
   },
   methods: {
     updateOptions() {
