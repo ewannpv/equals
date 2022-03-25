@@ -1,5 +1,5 @@
 <template>
-  <div class="my-3">
+  <div :v-if="this.treeViewItems.length > 0" class="my-3">
     <v-row class="text-h5"> Options </v-row>
     <v-row>
       <v-col md="6" cols="12">
@@ -21,8 +21,10 @@
       </v-col>
     </v-row>
     <v-treeview
+      item-disabled="locked"
       selectable
       :items="treeViewItems"
+      :v-model="selectedItems"
       @input="onUpdateItems"
       selection-type="independent"
     />
@@ -31,7 +33,7 @@
 
 <script>
 import { getTreeViewFromNetwork } from '@/utils/service';
-import { generateTreeView, getEvolution } from '@/utils/treeView';
+import { generateTreeView, getEvolution, updateTreeView } from '@/utils/treeView';
 
 export default {
   components: {},
@@ -52,14 +54,19 @@ export default {
   },
   methods: {
     onUpdateSlider() {
-      console.log(getEvolution(this.treeViewItems, this.range, this.selectedItems));
+      this.treeViewItems = updateTreeView(this.treeViewItems, this.selectedItems, this.range);
+      console.log('2', getEvolution(this.treeViewItems, this.range, this.selectedItems));
     },
     onUpdateItems(items) {
+      this.treeViewItems = updateTreeView(this.treeViewItems, this.selectedItems, this.range);
       this.selectedItems = items;
-      console.log(getEvolution(this.treeViewItems, this.range, items));
+      console.log(this.treeViewItems);
+      console.log('3', getEvolution(this.treeViewItems, this.selectedItems, this.range, items));
     },
     async setTreeView() {
-      this.treeViewItems = await generateTreeView();
+      const tmpTree = await generateTreeView();
+      this.treeViewItems = updateTreeView(tmpTree, this.selectedItems, this.range);
+      console.log('1', this.treeViewItems);
     },
   },
 };
