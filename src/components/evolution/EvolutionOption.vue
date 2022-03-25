@@ -14,12 +14,14 @@
       </v-col>
     </v-row>
     <template>
-      <v-treeview selectable :items="treeViewItems"></v-treeview>
+      <v-treeview selectable :items="treeViewItems" @input="updateOptions()"></v-treeview>
     </template>
   </div>
 </template>
 
 <script>
+import treeViewItems from '@/utils/treeViewItems';
+
 export default {
   components: {},
   data() {
@@ -29,18 +31,17 @@ export default {
       max: 2020,
       lastEstimatedYear: 2050,
       range: [0, 0],
-      treeViewItems: [
-        {
-          id: 1,
-          name: 'Economie :',
-        },
-      ],
+      treeViewItems,
     };
   },
   mounted() {
     this.range = [this.min, this.max];
   },
-  methods: {},
+  methods: {
+    updateOptions() {
+      console.log(this.treeViewItems);
+    },
+  },
 };
 </script>
 

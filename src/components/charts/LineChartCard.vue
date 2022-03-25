@@ -1,6 +1,6 @@
 <template>
   <CardLayout v-if="filteredChartData" color="white" width="100%">
-    <v-card-title>{{ filteredChartData.source.title }}</v-card-title>
+    <v-card-title>{{ filteredChartData.title }}</v-card-title>
     <v-card-text>
       {{ filteredChartData.description }}
     </v-card-text>
