@@ -3,7 +3,7 @@
     <CardLayout>
       <v-card-title>
         <v-icon large left> mdi-cash-multiple </v-icon>
-        <span class="text-h3">Evolution</span>
+        <span class="text-h3">Évolution</span>
       </v-card-title>
       <v-card-text>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ex, quod, mollitia corrupti minima
@@ -13,7 +13,7 @@
           <v-row justify="center">
             <v-col cols="12" md="4" class="d-flex">
               <EvolutionCard
-                title="Evolution de la situation de la Femme"
+                title="Évolution de la situation de la Femme"
                 :description="descriptionFirstChart"
                 :value="evolution"
                 :key="needUpdate"
@@ -21,7 +21,7 @@
             </v-col>
             <v-col cols="12" md="4" class="d-flex">
               <GapCard
-                title="Evolution ecart Homme / Femme"
+                title="Évolution écart Homme / Femme"
                 :description="descriptionSecondChart"
                 :value="evolutionGap"
                 :key="needUpdate"
@@ -29,7 +29,7 @@
             </v-col>
             <v-col cols="12" md="4" class="d-flex">
               <EquityCard
-                title="Nombre d'annee avant equite"
+                title="Nombre d'année avant équité"
                 description="lorem ipsum..."
                 :value="equity"
                 :key="needUpdate"
@@ -76,9 +76,9 @@ export default {
       evolution: 0,
       evolutionGap: [0, 0],
       descriptionFirstChart:
-        "Moyenne de la situation de la femme aux dates selectionnees. Si la valeur est negative, cela veut dire que la situation de la femme s'est ameliorée.",
+        "Moyenne de la situation de la femme aux dates sélectionnees. Si la valeur est négative, cela veut dire que la situation de la femme s'est ameliorée.",
       descriptionSecondChart:
-        'Comparatif de situation entre homme et femme aux dates selectionnées. La valeur de gauche indique la situation à la date de debut et la valeur de droite indique la situation à la date de fin. Si la valeur est négative, cela veut dire que la situation de la femme est meilleure que celle des hommes',
+        'Comparatif de situation entre homme et femme aux dates sélectionnées. La valeur de gauche indique la situation à la date de debut et la valeur de droite indique la situation à la date de fin. Si la valeur est négative, cela veut dire que la situation de la femme est meilleure que celle des hommes',
       equity: 0,
     };
   },

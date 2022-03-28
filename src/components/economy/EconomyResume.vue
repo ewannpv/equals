@@ -4,7 +4,7 @@
       <v-row color="white">
         <v-col cols="12" sm="6" class="d-flex">
           <div>
-            <v-card-title> Resume </v-card-title>
+            <v-card-title> Résumé </v-card-title>
             <v-card-text>
               Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam quidem hic,
               dolorum explicabo et aliquid, animi enim quaerat sequi ab eveniet delectus autem?
