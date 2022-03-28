@@ -2,7 +2,7 @@
   <div :v-if="this.treeViewItems.length > 0" class="my-3">
     <v-row>
       <v-col md="6" cols="12">
-        <v-row class="text-h5 my-2"> Options </v-row>
+        <v-row class="text-h5 my-2 mx-0"> Année de référence </v-row>
         <v-range-slider
           v-model="range"
           :max="max"
@@ -29,6 +29,8 @@
         >
       </v-col>
     </v-row>
+    <v-row class="text-h5 my-2 mx-0"> Source de données </v-row>
+
     <v-treeview
       open-all
       item-disabled="locked"
