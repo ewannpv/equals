@@ -2,8 +2,8 @@
   <CardLayout color="white" width="100%">
     <v-card-text>
       <v-col cols="12">
-        <v-row justify="center" class="text-h4"> {{ title }} </v-row>
-        <v-row justify="center" align="center">
+        <v-row justify="center" class="text-h5"> {{ title }} </v-row>
+        <v-row justify="center" align="center" class="py-3">
           <v-btn class="ma-2" x-large outlined rounded color="indigo">
             {{ displayedValue }}
           </v-btn>
