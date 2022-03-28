@@ -333,25 +333,26 @@ export const getEvolutionGap = (treeView, range, items) => {
       case 16:
       case 17:
       case 18:
-        // {
-        //   const datasetIndex = (element - 16) * 2;
-        //   console.log(datasetIndex);
-        //   elements.push(
-        //     -getPercentage(
-        //       treeView.dataSocial[2].datasets[datasetIndex],
-        //       treeView.dataSocial[2].labels,
-        //       range,
-        //     ),
-        //   );
-        // }
+        {
+          const datasetIndex = (element - 16) * 2;
+          elements.push(
+            getPercentageGap(
+              treeView.dataSocial[2].datasets[datasetIndex + 1].data,
+              treeView.dataSocial[2].datasets[datasetIndex].data,
+              treeView.dataSocial[2].labels,
+              range,
+            ),
+          );
+        }
         break;
       case 19: {
-        // const value = -getPercentage(
-        //   treeView.dataSocial[3].datasets[0],
-        //   treeView.dataSocial[3].labels,
-        //   range,
-        // );
-        // if (Number.isFinite(value)) elements.push(value);
+        const value = getPercentageGap(
+          treeView.dataSocial[3].datasets[1].data,
+          treeView.dataSocial[3].datasets[0].data,
+          treeView.dataSocial[3].labels,
+          range,
+        );
+        if (Number.isFinite(value[0]) && Number.isFinite(value[1])) elements.push(value);
         break;
       }
 

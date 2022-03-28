@@ -69,7 +69,6 @@ export default {
 
       const evolution = getEvolution(this.treeViewItems, this.range, this.selectedItems);
       const evolutionGap = getEvolutionGap(this.treeViewItems, this.range, this.selectedItems);
-
       this.$emit('updateEvolution', evolution);
       this.$emit('updateEvolutionGap', evolutionGap);
       this.$emit('updateOptionCard');

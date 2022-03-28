@@ -86,6 +86,8 @@ export default {
           parseFloat(value[0].toFixed(2), 10),
           parseFloat(value[1].toFixed(2), 10),
         ];
+      } else {
+        this.evolutionGap = [0, 0];
       }
     },
     updateOptionCard() {
