@@ -2,7 +2,7 @@
   <ContainerLayout class="py-3 social-container">
     <CardLayout color="white" class="mx-3 mb-5">
       <v-card-title>
-        <v-icon large left> mdi-account-circle </v-icon>
+        <v-icon large left color="#fe9292"> mdi-account-circle </v-icon>
         <span class="text-h4">Social</span>
       </v-card-title>
     </CardLayout>
