@@ -1,9 +1,9 @@
 <template>
   <CardLayout color="white" width="100%">
-    <v-card-text>
-      <v-col cols="12">
+    <v-card-text class="full-height">
+      <v-col cols="12" class="flex-evolution-card">
         <v-row justify="center" class="text-h5"> {{ title }} </v-row>
-        <v-row justify="center" align="center">
+        <v-row justify="center" align="center" class="ma-0">
           <v-btn class="ma-2" x-large outlined rounded :color="circularColor">
             <h1>{{ displayedValue[0] }}%</h1>
           </v-btn>

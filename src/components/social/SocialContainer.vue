@@ -1,5 +1,5 @@
 <template>
-  <ContainerLayout color="#fe9292" class="py-3">
+  <ContainerLayout class="py-3 social-container">
     <CardLayout color="white" class="mx-3 mb-5">
       <v-card-title>
         <v-icon large left> mdi-account-circle </v-icon>
@@ -50,4 +50,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.social-container {
+  background: linear-gradient(#fe9292, #b39ddb);
+}
+</style>

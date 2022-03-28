@@ -1,5 +1,5 @@
 <template>
-  <ContainerLayout color="#97d3d3" class="pa-3">
+  <ContainerLayout class="pa-3 evolution-container">
     <CardLayout>
       <v-card-title>
         <v-icon large left> mdi-chart-donut </v-icon>
@@ -76,11 +76,11 @@ export default {
       evolution: 0,
       evolutionGap: [0, 0],
       descriptionFirstChart:
-        'Evolution de la situation des femmes en pourcentage. Si le chiffre est négatif, cela represente une amélioration.',
+        'Évolution de la situation de la Femme en pourcentage. Si le chiffre est négatif, cela represente une amélioration.',
       descriptionSecondChart:
         "Comparatif de l'évolution de l'écart entre les hommes et les femmes. Le chiffre de gauche représente la situation à la date de début et le chiffre de droite représente la situation à la date de fin.",
       descriptionThirdChart:
-        "Nombre d'années nécessaires avant d'atteindre une situation équitable ou avantageuse pour les femmes",
+        "Nombre d'années nécessaires avant d'atteindre une situation équitable ou avantageuse pour la Femme",
       equity: 0,
       equityRange: 0,
     };
@@ -113,4 +113,18 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.full-height {
+  height: 100%;
+}
+.flex-evolution-card {
+  flex-direction: column;
+  justify-content: space-around;
+  display: flex;
+  height: 100%;
+}
+
+.evolution-container {
+  background: linear-gradient(#97d3d3, #fee3ab);
+}
+</style>

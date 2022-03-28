@@ -1,8 +1,8 @@
 <template>
   <div :v-if="this.treeViewItems.length > 0" class="my-3">
-    <v-row class="text-h5"> Options </v-row>
     <v-row>
       <v-col md="6" cols="12">
+        <v-row class="text-h5 my-2 mx-0"> Année de référence </v-row>
         <v-range-slider
           v-model="range"
           :max="max"
@@ -19,7 +19,18 @@
           </template>
         </v-range-slider>
       </v-col>
+      <v-col md="6" cols="12">
+        <v-row class="text-h5 my-2 mx-2"> Informations </v-row>
+
+        <v-row class="text-body-2 mx-2">
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus iusto provident quod
+          omnis at, magni fuga asperiores maiores laboriosam doloremque iure necessitatibus, qui cum
+          perspiciatis exercitationem reiciendis in veritatis veniam!</v-row
+        >
+      </v-col>
     </v-row>
+    <v-row class="text-h5 my-2 mx-0"> Source de données </v-row>
+
     <v-treeview
       open-all
       item-disabled="locked"
