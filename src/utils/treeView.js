@@ -276,7 +276,6 @@ const getPercentageDifferenceGap = (dataWoman, dataMan, labels, range) => {
 };
 
 export const getEvolutionGap = (treeView, range, items) => {
-  console.log(treeView);
   const elements = [];
   items.forEach((element) => {
     switch (element) {
@@ -370,4 +369,15 @@ export const getEvolutionGap = (treeView, range, items) => {
   });
 
   return [startSum / elements.length, endSum / elements.length];
+};
+
+export const getEquity = (evolutionGap, range) => {
+  const time = range[1] - range[0];
+  const diff = evolutionGap[0] - evolutionGap[1];
+  if (time <= 0) return 0;
+
+  const ratio = diff / time;
+  if (ratio < 0) return -1;
+
+  return Math.ceil(evolutionGap[1] / ratio);
 };

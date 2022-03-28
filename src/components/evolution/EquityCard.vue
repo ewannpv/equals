@@ -5,12 +5,7 @@
         <v-row justify="center" class="text-h4"> {{ title }} </v-row>
         <v-row justify="center" align="center">
           <v-btn class="ma-2" x-large outlined rounded color="indigo">
-            {{ displayedValue[0] }}
-          </v-btn>
-          <v-icon>mdi-arrow-right-bold </v-icon>
-
-          <v-btn class="ma-2" x-large outlined rounded color="indigo">
-            {{ displayedValue[1] }}
+            {{ displayedValue }}
           </v-btn>
         </v-row>
         <v-row justify="center">
@@ -25,7 +20,7 @@
 import CardLayout from '@/components/layout/CardLayout.vue';
 
 export default {
-  props: { title: String, description: String, value: Array },
+  props: { title: String, description: String, value: Number },
   components: { CardLayout },
   data() {
     return {

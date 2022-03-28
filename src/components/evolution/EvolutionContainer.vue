@@ -28,10 +28,11 @@
               />
             </v-col>
             <v-col cols="12" md="4" class="d-flex">
-              <EvolutionCard
+              <EquityCard
                 title="Nombre d'annee avant equite"
                 description="lorem ipsum..."
-                :value="parseInt(30, 10)"
+                :value="equity"
+                :key="needUpdate"
               />
             </v-col>
           </v-row>
@@ -39,6 +40,7 @@
             @updateEvolution="updateEvolution"
             @updateEvolutionGap="updateEvolutionGap"
             @updateOptionCard="updateOptionCard"
+            @updateEquity="updateEquity"
           />
         </v-container>
       </v-card-text>
@@ -52,6 +54,7 @@ import CardLayout from '@/components/layout/CardLayout.vue';
 import EvolutionCard from '@/components/evolution/EvolutionCard.vue';
 import GapCard from '@/components/evolution/GapCard.vue';
 import EvolutionOption from '@/components/evolution/EvolutionOption.vue';
+import EquityCard from '@/components/evolution/EquityCard.vue';
 
 export default {
   components: {
@@ -60,6 +63,7 @@ export default {
     EvolutionCard,
     GapCard,
     EvolutionOption,
+    EquityCard,
   },
   data() {
     return {
@@ -75,6 +79,7 @@ export default {
         "Moyenne de la situation de la femme aux dates selectionnees. Si la valeur est negative, cela veut dire que la situation de la femme s'est ameliorée.",
       descriptionSecondChart:
         'Comparatif de situation entre homme et femme aux dates selectionnées. La valeur de gauche indique la situation à la date de debut et la valeur de droite indique la situation à la date de fin. Si la valeur est négative, cela veut dire que la situation de la femme est meilleure que celle des hommes',
+      equity: 0,
     };
   },
   mounted() {
@@ -96,6 +101,9 @@ export default {
     },
     updateOptionCard() {
       this.needUpdate = !this.needUpdate;
+    },
+    updateEquity(value) {
+      this.equity = value;
     },
   },
 };
