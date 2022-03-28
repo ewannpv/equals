@@ -2,7 +2,7 @@
   <ContainerLayout class="py-3 econmy-container">
     <CardLayout color="white" class="mx-3 mb-5">
       <v-card-title>
-        <v-icon large left> mdi-cash-multiple </v-icon>
+        <v-icon large left color="#fee3ab"> mdi-cash-multiple </v-icon>
         <span class="text-h4">Économie</span>
       </v-card-title>
     </CardLayout>

@@ -2,7 +2,7 @@
   <ContainerLayout class="pa-3 evolution-container">
     <CardLayout>
       <v-card-title>
-        <v-icon large left> mdi-chart-donut </v-icon>
+        <v-icon large left color="#97d3d3"> mdi-chart-donut </v-icon>
         <span class="text-h3">Évolution</span>
       </v-card-title>
       <v-card-text>
