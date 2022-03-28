@@ -23,10 +23,10 @@
         <v-row class="text-h5 my-2 mx-2"> Informations </v-row>
 
         <v-row class="text-body-2 mx-2">
-          L'arbre de sélection donne la possibilité de voir l'évolution globale de la place
-          de la Femme à partir des dates et des jeux de données sélectionnés. Lorsqu'un jeu
-          de données est grisé, cela signifie qu'il n'existe pas de donnée pour la plage temporelle
-          souhaitée.
+          L'arbre de sélection offre la possibilité de voir l'évolution globale de la place de la
+          Femme à partir des dates et des jeux de données sélectionnés.<br />
+          Lorsqu'un jeu de données est grisé, cela signifie qu'il n'existe pas de donnée pour la
+          plage temporelle souhaitée.
         </v-row>
       </v-col>
     </v-row>
