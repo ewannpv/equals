@@ -35,8 +35,16 @@ const treeViewItems = [
           { id: 14, name: 'Au moins Bac + 2' },
         ],
       },
-      { id: 15, name: "Victimes d'agression ou de vol hors ménage (2009 à 2019)" },
-      { id: 16, name: 'Les violences au sein du couple et les violences sexuelles (2006 à 2020)' },
+      {
+        id: 15,
+        name: "Victimes d'agression ou de vol hors ménage (2009 à 2019)",
+        children: [
+          { id: 16, name: 'Violences physiques ou sexuelles' },
+          { id: 17, name: 'Menaces ou insultes' },
+          { id: 18, name: 'Vols avec ou sans violences' },
+        ],
+      },
+      { id: 19, name: 'Les violences au sein du couple et les violences sexuelles (2006 à 2020)' },
     ],
   },
 ];
@@ -68,6 +76,7 @@ const getLockedStatus = (treeView, id, range) => {
     case 2:
       nodeRange = treeView.dataEconomy[0].range;
       break;
+    case 3:
     case 4:
     case 5:
     case 6:
@@ -78,11 +87,21 @@ const getLockedStatus = (treeView, id, range) => {
     case 8:
       nodeRange = treeView.dataEconomy[2].range;
       break;
+    case 10:
     case 11:
     case 12:
     case 13:
     case 14:
       nodeRange = treeView.dataSocial[0].range;
+      break;
+    case 15:
+    case 16:
+    case 17:
+    case 18:
+      nodeRange = treeView.dataSocial[2].range;
+      break;
+    case 19:
+      nodeRange = treeView.dataSocial[3].range;
       break;
     default:
       return false;
@@ -136,6 +155,7 @@ const getPercentageDifference = (dataset, labels, range) => {
 };
 
 export const getEvolution = (treeView, range, items) => {
+  console.log(treeView);
   const elements = [];
   items.forEach((element) => {
     switch (element) {
@@ -180,6 +200,31 @@ export const getEvolution = (treeView, range, items) => {
           );
         }
         break;
+      case 16:
+      case 17:
+      case 18:
+        {
+          const datasetIndex = (element - 16) * 2;
+          console.log(datasetIndex);
+          elements.push(
+            -getPercentage(
+              treeView.dataSocial[2].datasets[datasetIndex],
+              treeView.dataSocial[2].labels,
+              range,
+            ),
+          );
+        }
+        break;
+      case 19: {
+        const value = -getPercentage(
+          treeView.dataSocial[3].datasets[0],
+          treeView.dataSocial[3].labels,
+          range,
+        );
+        if (Number.isFinite(value)) elements.push(value);
+        break;
+      }
+
       default:
         break;
     }
