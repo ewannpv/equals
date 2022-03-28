@@ -40,7 +40,7 @@ export default {
       return 'red';
     },
     displayedValue() {
-      if (this.value <= 0) return 'Equite atteinte';
+      if (this.value <= 0) return 'Équité atteinte';
       if (Number.isNaN(this.value)) return 0;
       if (!Number.isFinite(this.value)) return 'Jamais';
       return this.range + this.value;

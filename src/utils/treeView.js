@@ -4,12 +4,12 @@ import { getSocial, getTravail } from '@/utils/service';
 const treeViewItems = [
   {
     id: 1,
-    name: 'Economie :',
+    name: 'Économie :',
     children: [
       { id: 2, name: "Nombre d'hommes et de femmes de 15 à 64 ans actives (1975 à 2021)" },
       {
         id: 3,
-        name: 'Ecart de salaire (1995 à 2019)',
+        name: 'Écart de salaire (1995 à 2019)',
         children: [
           { id: 4, name: 'Cadres' },
           { id: 5, name: 'Ouvriers' },
@@ -17,7 +17,7 @@ const treeViewItems = [
           { id: 7, name: 'Employés' },
         ],
       },
-      { id: 8, name: 'Taux de chomage (1975 à 2021)' },
+      { id: 8, name: 'Taux de chômage (1975 à 2021)' },
     ],
   },
   {
@@ -26,9 +26,9 @@ const treeViewItems = [
     children: [
       {
         id: 10,
-        name: 'Niveau de diplome selon le sexe (2006 à 2018)',
+        name: 'Niveau de diplôme selon le sexe (2006 à 2018)',
         children: [
-          { id: 11, name: 'Diplome niveau college' },
+          { id: 11, name: 'Diplôme niveau collège' },
           { id: 12, name: 'CAP/BEP' },
 
           { id: 13, name: 'Baccalauréat' },
