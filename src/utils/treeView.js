@@ -155,7 +155,6 @@ const getPercentageDifference = (dataset, labels, range) => {
 };
 
 export const getEvolution = (treeView, range, items) => {
-  console.log(treeView);
   const elements = [];
   items.forEach((element) => {
     switch (element) {
@@ -236,4 +235,112 @@ export const getEvolution = (treeView, range, items) => {
     0,
   );
   return sumElements / elements.length;
+};
+
+const getPercentageGap = (dataWoman, dataMan, labels, range) => {
+  const labelStart = labels[0];
+  const labelEnd = labels[labels.length - 1];
+  if (labelStart > range[0] || labelEnd < range[1]) return 0;
+
+  const indexStart = labels.indexOf(range[0].toString());
+  const indexEnd = labels.indexOf(range[1].toString());
+  if (indexStart < 0 || indexEnd < 0) return 0;
+
+  const dataStart = ((dataMan[indexStart] - dataWoman[indexStart]) / dataMan[indexStart]) * 100;
+  const dataEnd = ((dataMan[indexEnd] - dataWoman[indexEnd]) / dataMan[indexEnd]) * 100;
+
+  return [dataStart, dataEnd];
+};
+
+export const getEvolutionGap = (treeView, range, items) => {
+  console.log(treeView);
+  const elements = [];
+  items.forEach((element) => {
+    switch (element) {
+      case 2: {
+        elements.push(
+          getPercentageGap(
+            treeView.dataEconomy[0].datasets[0].data,
+            treeView.dataEconomy[0].datasets[1].data,
+            treeView.dataEconomy[0].labels,
+            range,
+          ),
+        );
+        break;
+      }
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+        // elements.push(
+        //   getPercentageDifference(
+        //     treeView.dataEconomy[1].datasets[element - 4],
+        //     treeView.dataEconomy[1].labels,
+        //     range,
+        //   ),
+        // );
+        break;
+      case 8:
+        // elements.push(
+        //   getPercentageDifference(
+        //     treeView.dataEconomy[2].datasets[0],
+        //     treeView.dataEconomy[2].labels,
+        //     range,
+        //   ),
+        // );
+        break;
+      case 11:
+      case 12:
+      case 13:
+      case 14:
+        // {
+        //   const datasetIndex = (element - 11) * 2;
+        //   elements.push(
+        //     getPercentage(
+        //       treeView.dataSocial[0].datasets[datasetIndex],
+        //       treeView.dataSocial[0].labels,
+        //       range,
+        //     ),
+        //   );
+        // }
+        break;
+      case 16:
+      case 17:
+      case 18:
+        // {
+        //   const datasetIndex = (element - 16) * 2;
+        //   console.log(datasetIndex);
+        //   elements.push(
+        //     -getPercentage(
+        //       treeView.dataSocial[2].datasets[datasetIndex],
+        //       treeView.dataSocial[2].labels,
+        //       range,
+        //     ),
+        //   );
+        // }
+        break;
+      case 19: {
+        // const value = -getPercentage(
+        //   treeView.dataSocial[3].datasets[0],
+        //   treeView.dataSocial[3].labels,
+        //   range,
+        // );
+        // if (Number.isFinite(value)) elements.push(value);
+        break;
+      }
+
+      default:
+        break;
+    }
+  });
+  if (!elements.length) return 0;
+
+  let startSum = 0;
+  let endSum = 0;
+  elements.forEach((element) => {
+    startSum += element[0];
+    endSum += element[1];
+  });
+
+  return [startSum / elements.length, endSum / elements.length];
 };

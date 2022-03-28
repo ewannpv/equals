@@ -33,7 +33,8 @@
 
 <script>
 import { getTreeViewFromNetwork } from '@/utils/service';
-import { generateTreeView, getEvolution, updateTreeView } from '@/utils/treeView';
+// eslint-disable-next-line object-curly-newline
+import { generateTreeView, getEvolution, getEvolutionGap, updateTreeView } from '@/utils/treeView';
 
 export default {
   data() {
@@ -56,14 +57,22 @@ export default {
       this.treeViewItems = updateTreeView(this.treeViewItems, this.range);
 
       const evolution = getEvolution(this.treeViewItems, this.range, this.selectedItems);
+      const evolutionGap = getEvolutionGap(this.treeViewItems, this.range, this.selectedItems);
+
       this.$emit('updateEvolution', evolution);
+      this.$emit('updateEvolutionGap', evolutionGap);
+      this.$emit('updateOptionCard');
     },
     onUpdateItems(items) {
       this.treeViewItems = updateTreeView(this.treeViewItems, this.range);
       this.selectedItems = items;
 
       const evolution = getEvolution(this.treeViewItems, this.range, this.selectedItems);
+      const evolutionGap = getEvolutionGap(this.treeViewItems, this.range, this.selectedItems);
+
       this.$emit('updateEvolution', evolution);
+      this.$emit('updateEvolutionGap', evolutionGap);
+      this.$emit('updateOptionCard');
     },
     async setTreeView() {
       const tmpTree = await generateTreeView();

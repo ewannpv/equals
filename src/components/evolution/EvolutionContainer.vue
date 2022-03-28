@@ -23,7 +23,8 @@
               <GapCard
                 title="Evolution ecart Homme / Femme"
                 description="lorem ipsum..."
-                :value="parseInt(30, 10)"
+                :value="evolutionGap"
+                :key="needUpdate"
               />
             </v-col>
             <v-col cols="12" md="4" class="d-flex">
@@ -34,7 +35,11 @@
               />
             </v-col>
           </v-row>
-          <EvolutionOption @updateEvolution="updateEvolution" />
+          <EvolutionOption
+            @updateEvolution="updateEvolution"
+            @updateEvolutionGap="updateEvolutionGap"
+            @updateOptionCard="updateOptionCard"
+          />
         </v-container>
       </v-card-text>
     </CardLayout>
@@ -65,6 +70,7 @@ export default {
       lastEstimatedYear: 2050,
       range: [0, 0],
       evolution: 0,
+      evolutionGap: [0, 0],
     };
   },
   mounted() {
@@ -73,6 +79,19 @@ export default {
   methods: {
     updateEvolution(value) {
       this.evolution = parseFloat(value.toFixed(2), 10);
+    },
+    updateEvolutionGap(value) {
+      console.log(value);
+      if (value.length) {
+        console.log('here');
+
+        this.evolutionGap = [
+          parseFloat(value[0].toFixed(2), 10),
+          parseFloat(value[1].toFixed(2), 10),
+        ];
+      }
+    },
+    updateOptionCard() {
       this.needUpdate = !this.needUpdate;
     },
   },
