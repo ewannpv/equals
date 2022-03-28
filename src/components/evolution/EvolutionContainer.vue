@@ -114,4 +114,14 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.full-height {
+  height: 100%;
+}
+.flex-evolution-card {
+  flex-direction: column;
+  justify-content: space-around;
+  display: flex;
+  height: 100%;
+}
+</style>
