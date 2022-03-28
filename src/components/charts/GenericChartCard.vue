@@ -68,14 +68,24 @@
               {{ getSelectedDataset().previsions[getSelectedDataset().previsions.bestType].bestA }}
               et b =
               {{ getSelectedDataset().previsions[getSelectedDataset().previsions.bestType].bestB }}
-
-              <v-btn depressed @click="resetPrevisions"> Restaurer les meilleurs paramètres </v-btn>
             </v-col>
             <v-col md="6">
               <div>
                 La formule utilisée pour estimer les données futures est <br />
                 {{ getCurrentFormula() }}
               </div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col md="6" class="d-flex flex-column justify-center align-center">
+              <v-btn
+                depressed
+                @click="resetPrevisions"
+                class="mt-3">
+                Restaurer les meilleurs paramètres
+              </v-btn>
+            </v-col>
+            <v-col md="6">
               <v-text-field
                 v-model="textFieldCoefficientA"
                 prefix="a = "
