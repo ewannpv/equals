@@ -13,8 +13,8 @@
           <v-row justify="center">
             <v-col cols="12" md="4" class="d-flex">
               <EvolutionCard
-                title="Evolution de la Femme"
-                description="lorem ipsum..."
+                title="Evolution de la situation de la Femme"
+                :description="descriptionFirstChart"
                 :value="evolution"
                 :key="needUpdate"
               />
@@ -22,7 +22,7 @@
             <v-col cols="12" md="4" class="d-flex">
               <GapCard
                 title="Evolution ecart Homme / Femme"
-                description="lorem ipsum..."
+                :description="descriptionSecondChart"
                 :value="evolutionGap"
                 :key="needUpdate"
               />
@@ -71,6 +71,10 @@ export default {
       range: [0, 0],
       evolution: 0,
       evolutionGap: [0, 0],
+      descriptionFirstChart:
+        "Moyenne de la situation de la femme aux dates selectionnees. Si la valeur est negative, cela veut dire que la situation de la femme s'est ameliorée.",
+      descriptionSecondChart:
+        'Comparatif de situation entre homme et femme aux dates selectionnées. La valeur de gauche indique la situation à la date de debut et la valeur de droite indique la situation à la date de fin. Si la valeur est négative, cela veut dire que la situation de la femme est meilleure que celle des hommes',
     };
   },
   mounted() {
