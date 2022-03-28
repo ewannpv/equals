@@ -47,7 +47,7 @@ export default {
     },
     displayedSub() {
       if (!Number.isFinite(this.value)) return 'jamais';
-      return `${this.value} ans`;
+      return `${this.value} ans à compter de ${this.range}`;
     },
   },
 };
