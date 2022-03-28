@@ -81,10 +81,7 @@ export default {
       this.evolution = parseFloat(value.toFixed(2), 10);
     },
     updateEvolutionGap(value) {
-      console.log(value);
       if (value.length) {
-        console.log('here');
-
         this.evolutionGap = [
           parseFloat(value[0].toFixed(2), 10),
           parseFloat(value[1].toFixed(2), 10),

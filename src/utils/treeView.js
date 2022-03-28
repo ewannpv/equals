@@ -204,7 +204,6 @@ export const getEvolution = (treeView, range, items) => {
       case 18:
         {
           const datasetIndex = (element - 16) * 2;
-          console.log(datasetIndex);
           elements.push(
             -getPercentage(
               treeView.dataSocial[2].datasets[datasetIndex],
@@ -252,6 +251,30 @@ const getPercentageGap = (dataWoman, dataMan, labels, range) => {
   return [dataStart, dataEnd];
 };
 
+const getPercentageUnionDifferenceGap = (dataset, labels, range) => {
+  const labelStart = labels[0];
+  const labelEnd = labels[labels.length - 1];
+  if (labelStart > range[0] || labelEnd < range[1]) return 0;
+
+  const indexStart = labels.indexOf(range[0].toString());
+  const indexEnd = labels.indexOf(range[1].toString());
+  if (indexStart < 0 || indexEnd < 0) return 0;
+
+  return [dataset[indexStart], dataset[indexEnd]];
+};
+
+const getPercentageDifferenceGap = (dataWoman, dataMan, labels, range) => {
+  const labelStart = labels[0];
+  const labelEnd = labels[labels.length - 1];
+  if (labelStart > range[0] || labelEnd < range[1]) return 0;
+
+  const indexStart = labels.indexOf(range[0].toString());
+  const indexEnd = labels.indexOf(range[1].toString());
+  if (indexStart < 0 || indexEnd < 0) return 0;
+
+  return [dataMan[indexStart] - dataWoman[indexStart], dataMan[indexEnd] - dataWoman[indexEnd]];
+};
+
 export const getEvolutionGap = (treeView, range, items) => {
   console.log(treeView);
   const elements = [];
@@ -272,37 +295,40 @@ export const getEvolutionGap = (treeView, range, items) => {
       case 5:
       case 6:
       case 7:
-        // elements.push(
-        //   getPercentageDifference(
-        //     treeView.dataEconomy[1].datasets[element - 4],
-        //     treeView.dataEconomy[1].labels,
-        //     range,
-        //   ),
-        // );
+        elements.push(
+          getPercentageUnionDifferenceGap(
+            treeView.dataEconomy[1].datasets[element - 4].data,
+            treeView.dataEconomy[1].labels,
+            range,
+          ),
+        );
         break;
       case 8:
-        // elements.push(
-        //   getPercentageDifference(
-        //     treeView.dataEconomy[2].datasets[0],
-        //     treeView.dataEconomy[2].labels,
-        //     range,
-        //   ),
-        // );
+        elements.push(
+          getPercentageDifferenceGap(
+            treeView.dataEconomy[2].datasets[1].data,
+            treeView.dataEconomy[2].datasets[0].data,
+            treeView.dataEconomy[2].labels,
+            range,
+          ),
+        );
         break;
       case 11:
       case 12:
       case 13:
       case 14:
-        // {
-        //   const datasetIndex = (element - 11) * 2;
-        //   elements.push(
-        //     getPercentage(
-        //       treeView.dataSocial[0].datasets[datasetIndex],
-        //       treeView.dataSocial[0].labels,
-        //       range,
-        //     ),
-        //   );
-        // }
+        {
+          const datasetIndex = (element - 11) * 2;
+
+          elements.push(
+            getPercentageGap(
+              treeView.dataSocial[0].datasets[datasetIndex].data,
+              treeView.dataSocial[0].datasets[datasetIndex + 1].data,
+              treeView.dataSocial[0].labels,
+              range,
+            ),
+          );
+        }
         break;
       case 16:
       case 17:
