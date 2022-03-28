@@ -168,6 +168,7 @@ export default {
 
     this.filteredChartData = JSON.parse(JSON.stringify(this.chartData));
     this.completedChartData = JSON.parse(JSON.stringify(this.chartData));
+    this.filterChartData();
   },
   components: {
     GenericChart,
