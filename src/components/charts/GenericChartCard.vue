@@ -114,7 +114,7 @@
       </div>
     </v-card-text>
     <v-card-text>
-      {{ filteredChartData.lecture }}<br />
+      Lecture : {{ filteredChartData.lecture }}<br />
       Source : <a :href="filteredChartData.source.link">{{ filteredChartData.source.title }}</a>
     </v-card-text>
   </CardLayout>
