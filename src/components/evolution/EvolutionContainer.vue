@@ -30,7 +30,7 @@
             <v-col cols="12" md="4" class="d-flex">
               <EquityCard
                 title="Année de l'équité"
-                description="lorem ipsum..."
+                :description="descriptionThirdChart"
                 :value="equity"
                 :range="equityRange"
                 :key="needUpdate"
@@ -77,9 +77,11 @@ export default {
       evolution: 0,
       evolutionGap: [0, 0],
       descriptionFirstChart:
-        "Moyenne de la situation de la femme aux dates sélectionnees. Si la valeur est négative, cela veut dire que la situation de la femme s'est ameliorée.",
+        'Evolution de la situation des femmes en pourcentage. Si le chiffre est négatif, cela represente une amélioration.',
       descriptionSecondChart:
-        'Comparatif de situation entre homme et femme aux dates sélectionnées. La valeur de gauche indique la situation à la date de debut et la valeur de droite indique la situation à la date de fin. Si la valeur est négative, cela veut dire que la situation de la femme est meilleure que celle des hommes',
+        "Comparatif de l'évolution de l'écart entre les hommes et les femmes. Le chiffre de gauche représente la situation à la date de début et le chiffre de droite représente la situation à la date de fin.",
+      descriptionThirdChart:
+        "Nombre d'années nécessaires avant d'atteindre une situation équitable ou avantageuse pour les femmes",
       equity: 0,
       equityRange: 0,
     };
