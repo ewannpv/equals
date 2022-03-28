@@ -78,6 +78,12 @@ const getLockedStatus = (treeView, id, range) => {
     case 8:
       nodeRange = treeView.dataEconomy[2].range;
       break;
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+      nodeRange = treeView.dataSocial[0].range;
+      break;
     default:
       return false;
   }
@@ -159,10 +165,27 @@ export const getEvolution = (treeView, range, items) => {
           ),
         );
         break;
+      case 11:
+      case 12:
+      case 13:
+      case 14:
+        {
+          const datasetIndex = (element - 11) * 2;
+          elements.push(
+            getPercentage(
+              treeView.dataSocial[0].datasets[datasetIndex],
+              treeView.dataSocial[0].labels,
+              range,
+            ),
+          );
+        }
+        break;
       default:
         break;
     }
   });
+
+  if (!elements.length) return 0;
   const sumElements = elements.reduce(
     (previousValue, currentValue) => previousValue + currentValue,
     0,

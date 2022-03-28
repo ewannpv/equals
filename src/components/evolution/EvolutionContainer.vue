@@ -15,7 +15,8 @@
               <EvolutionCard
                 title="Evolution de la Femme"
                 description="lorem ipsum..."
-                :value="parseInt(30, 10)"
+                :value="evolution"
+                :key="needUpdate"
               />
             </v-col>
             <v-col cols="12" md="4" class="d-flex">
@@ -33,7 +34,7 @@
               />
             </v-col>
           </v-row>
-          <EvolutionOption />
+          <EvolutionOption @updateEvolution="updateEvolution" />
         </v-container>
       </v-card-text>
     </CardLayout>
@@ -58,17 +59,23 @@ export default {
   data() {
     return {
       checkbox: true,
-
+      needUpdate: false,
       min: 2000,
       max: 2020,
       lastEstimatedYear: 2050,
       range: [0, 0],
+      evolution: 0,
     };
   },
   mounted() {
     this.range = [this.min, this.max];
   },
-  methods: {},
+  methods: {
+    updateEvolution(value) {
+      this.evolution = parseFloat(value.toFixed(2), 10);
+      this.needUpdate = !this.needUpdate;
+    },
+  },
 };
 </script>
 

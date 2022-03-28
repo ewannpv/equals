@@ -9,9 +9,9 @@
             :size="100"
             :width="15"
             :value="displayedValue"
-            color="teal"
+            color="pink lighten-1"
           >
-            {{ displayedValue }}
+            <h2>{{ displayedValue }}</h2>
           </v-progress-circular>
         </v-row>
         <v-row justify="center">

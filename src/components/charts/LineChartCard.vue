@@ -398,7 +398,6 @@ export default {
             previsions.selectedType,
           ),
         );
-        console.log(dataset.data[lastDataIndex]);
         this.updateEstimationData();
       }
     },

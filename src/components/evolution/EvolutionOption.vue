@@ -36,7 +36,6 @@ import { getTreeViewFromNetwork } from '@/utils/service';
 import { generateTreeView, getEvolution, updateTreeView } from '@/utils/treeView';
 
 export default {
-  components: {},
   data() {
     return {
       checkbox: true,
@@ -55,19 +54,20 @@ export default {
   methods: {
     onUpdateSlider() {
       this.treeViewItems = updateTreeView(this.treeViewItems, this.range);
-      console.log('2', getEvolution(this.treeViewItems, this.range, this.selectedItems));
+
+      const evolution = getEvolution(this.treeViewItems, this.range, this.selectedItems);
+      this.$emit('updateEvolution', evolution);
     },
     onUpdateItems(items) {
       this.treeViewItems = updateTreeView(this.treeViewItems, this.range);
       this.selectedItems = items;
-      console.log(this.treeViewItems);
-      console.log(this.range);
-      console.log('3', getEvolution(this.treeViewItems, this.range, this.selectedItems));
+
+      const evolution = getEvolution(this.treeViewItems, this.range, this.selectedItems);
+      this.$emit('updateEvolution', evolution);
     },
     async setTreeView() {
       const tmpTree = await generateTreeView();
       this.treeViewItems = updateTreeView(tmpTree, this.range);
-      console.log('1', this.treeViewItems);
     },
   },
 };
