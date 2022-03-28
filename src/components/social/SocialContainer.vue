@@ -1,16 +1,10 @@
 <template>
-  <ContainerLayout color="#fe9292" class="py-3">
+  <ContainerLayout class="py-3 social-container">
     <CardLayout color="white" class="mx-3 mb-5">
       <v-card-title>
-        <v-icon large left> mdi-cash-multiple </v-icon>
+        <v-icon large left color="#fe9292"> mdi-account-circle </v-icon>
         <span class="text-h4">Social</span>
       </v-card-title>
-
-      <v-card-text class="text-h5">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam quidem hic, dolorum
-        explicabo et aliquid, animi enim quaerat sequi ab eveniet delectus autem? Nobis,
-        reprehenderit? Temporibus quos corrupti aliquid dolorum.
-      </v-card-text>
     </CardLayout>
     <v-container fluid class="px-3">
       <v-row color="white">
@@ -21,7 +15,7 @@
           md="6"
           class="d-flex"
         >
-          <GenericChartCard :chartData="chartData" :chartType="chartType"/>
+          <GenericChartCard :chartData="chartData" :chartType="chartType" />
         </v-col>
       </v-row>
     </v-container>
@@ -56,4 +50,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.social-container {
+  background: linear-gradient(#fe9292, #b39ddb);
+}
+</style>

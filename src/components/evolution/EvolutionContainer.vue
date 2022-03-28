@@ -1,14 +1,13 @@
 <template>
-  <ContainerLayout color="#97d3d3" class="pa-3">
+  <ContainerLayout class="pa-3 evolution-container">
     <CardLayout>
       <v-card-title>
-        <v-icon large left> mdi-cash-multiple </v-icon>
+        <v-icon large left color="#97d3d3"> mdi-chart-donut </v-icon>
         <span class="text-h3">Évolution</span>
       </v-card-title>
       <v-card-text>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ex, quod, mollitia corrupti minima
-        sint magni consequuntur assumenda nihil ad exercitationem distinctio sunt possimus adipisci
-        iure doloremque consectetur et eligendi hic?
+        Vous trouverez ci-dessous un ensemble d'outils permettant d'agréger les donnees sur la
+        période définie ci-apres (configurée de 2000 à 2020 par défaut).
         <v-container fluid>
           <v-row justify="center">
             <v-col cols="12" md="4" class="d-flex">
@@ -123,5 +122,9 @@ export default {
   justify-content: space-around;
   display: flex;
   height: 100%;
+}
+
+.evolution-container {
+  background: linear-gradient(#97d3d3, #fee3ab);
 }
 </style>
