@@ -21,6 +21,7 @@
       </v-col>
     </v-row>
     <v-treeview
+      open-all
       item-disabled="locked"
       selectable
       :items="treeViewItems"

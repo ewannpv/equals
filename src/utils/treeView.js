@@ -377,7 +377,7 @@ export const getEquity = (evolutionGap, range) => {
   if (time <= 0) return 0;
 
   const ratio = diff / time;
-  if (ratio < 0) return -1;
+  if (ratio < 0) return 1 / 0;
 
   return Math.ceil(evolutionGap[1] / ratio);
 };
