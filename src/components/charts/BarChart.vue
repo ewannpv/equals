@@ -1,10 +1,10 @@
 <script>
-import { Bar } from 'vue-chartjs';
+import { Bar, mixins } from 'vue-chartjs';
 
 export default {
   extends: Bar,
+  mixins: [mixins.reactiveProp],
   props: {
-    chartData: Object,
     options: Object,
   },
   mounted() {

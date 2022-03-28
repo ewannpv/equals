@@ -4,7 +4,7 @@
     <v-card-text>
       {{ filteredChartData.description }}
     </v-card-text>
-    <GenericChart :chartData="filteredChartData" :type="chartType" :key="refresh" />
+    <GenericChart :chartData="filteredChartData" :type="chartType" />
     <v-row>
       <v-col class="px-4">
         <v-range-slider
@@ -148,7 +148,6 @@ export default {
     return {
       displayEstimationBtn: false,
       estimationTypes: Object.values(estimationTypes),
-      refresh: false,
       min: 0,
       max: 0,
       lastEstimatedYear: 2050,
@@ -162,7 +161,7 @@ export default {
       switchAutoB: false,
     };
   },
-  mounted() {
+  beforeMount() {
     [this.min, this.max] = [
       this.chartData.labels[0],
       this.chartData.labels[this.chartData.labels.length - 1],
@@ -176,8 +175,7 @@ export default {
     } while (minValue < 2000 && this.chartData.labels[index]);
     this.range = [minValue, this.max];
 
-    this.filteredChartData = JSON.parse(JSON.stringify(this.chartData));
-    this.completedChartData = JSON.parse(JSON.stringify(this.chartData));
+    this.completeDatasetWithPrevision();
     this.filterChartData();
   },
   components: {
@@ -192,7 +190,6 @@ export default {
     displayEstimation() {
       this.displayEstimationBtn = !this.displayEstimationBtn;
       if (this.displayEstimationBtn) {
-        this.completeDatasetWithPrevision();
         this.max = this.lastEstimatedYear;
       } else {
         const lastYear = +this.chartData.labels[this.chartData.labels.length - 1];
@@ -214,7 +211,6 @@ export default {
           });
         }
       }
-      this.refresh = !this.refresh;
     },
     getArrayOfYearsToPredict() {
       const lastYearWithEffectiveData = parseInt(
@@ -290,6 +286,8 @@ export default {
 
         return {
           ...dataset,
+          fill: false,
+          borderWidth: 1,
           data: dataset.data.concat(estimatedValues),
           previsions: {
             bestType, // type of closest model to the effective data

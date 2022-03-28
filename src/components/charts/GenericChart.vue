@@ -1,6 +1,6 @@
 <template>
-  <LineChart v-if="type === chartTypes.LINE" :chartData="completeChartData" :options="options"/>
-  <BarChart v-else-if="type === chartTypes.BAR" :chartData="completeChartData" :options="options"/>
+  <LineChart v-if="type === chartTypes.LINE" :chart-data="chartData" :options="options"/>
+  <BarChart v-else-if="type === chartTypes.BAR" :chart-data="chartData" :options="options"/>
   <div v-else>Error</div>
 </template>
 
@@ -17,16 +17,6 @@ export default {
   data() {
     return {
       chartTypes,
-      completeChartData: {
-        labels: this.chartData?.labels,
-        datasets: this.chartData?.datasets.map((dataset) => ({
-          fill: false,
-          borderColor: '#2554FF',
-          backgroundColor: '#2554FF',
-          borderWidth: 1,
-          ...dataset,
-        })),
-      },
       options: {
         scales: {
           yAxes: [
