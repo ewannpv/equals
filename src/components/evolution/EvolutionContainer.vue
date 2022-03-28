@@ -6,8 +6,9 @@
         <span class="text-h3">Évolution</span>
       </v-card-title>
       <v-card-text>
-        Vous trouverez ci-dessous un ensemble d'outils permettant d'agréger les donnees sur la
-        période définie ci-apres (configurée de 2000 à 2020 par défaut).
+        Vous trouverez ci-dessous un ensemble d'outils permettant d'agréger les données (provenant
+        de notre jeu de données) sur la période définie ci-apres (configurée de 2000 à 2020 par
+        défaut).
         <v-container fluid>
           <v-row justify="center">
             <v-col cols="12" md="4" class="d-flex">
