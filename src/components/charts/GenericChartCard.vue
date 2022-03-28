@@ -132,12 +132,10 @@ import {
   getEstimatedValuesFromCoefficients,
   getMeanSquaredDeviation,
 } from '@/utils/computing';
-import { chartTypes } from '@/utils/chart';
 
 export default {
   data() {
     return {
-      chartType: chartTypes.LINE,
       displayEstimationBtn: false,
       estimationTypes: Object.values(estimationTypes),
       refresh: false,
@@ -177,6 +175,7 @@ export default {
   },
   props: {
     chartData: {},
+    chartType: undefined,
   },
   methods: {
     displayEstimation() {

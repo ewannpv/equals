@@ -21,7 +21,7 @@
           md="6"
           class="d-flex"
         >
-          <BarChartCard :chartData="chartData" />
+          <GenericChartCard :chartData="chartData" :chartType="chartType"/>
         </v-col>
       </v-row>
     </v-container>
@@ -29,16 +29,18 @@
 </template>
 
 <script>
-import BarChartCard from '@/components/charts/BarChartCard.vue';
+import GenericChartCard from '@/components/charts/GenericChartCard.vue';
 import ContainerLayout from '@/components/layout/ContainerLayout.vue';
 import { getSocial } from '@/utils/service';
 import CardLayout from '@/components/layout/CardLayout.vue';
+import { chartTypes } from '@/utils/chart';
 
 export default {
-  components: { ContainerLayout, BarChartCard, CardLayout },
+  components: { ContainerLayout, GenericChartCard, CardLayout },
   data() {
     return {
       chartsData: {},
+      chartType: chartTypes.BAR,
       loaded: false,
     };
   },

@@ -22,7 +22,7 @@
           md="6"
           class="d-flex"
         >
-          <LineChartCard :chartData="chartData" />
+          <GenericChartCard :chartData="chartData" :chartType="chartType"/>
         </v-col>
       </v-row>
     </v-container>
@@ -30,16 +30,18 @@
 </template>
 
 <script>
-import LineChartCard from '@/components/charts/LineChartCard.vue';
+import GenericChartCard from '@/components/charts/GenericChartCard.vue';
 import ContainerLayout from '@/components/layout/ContainerLayout.vue';
 import { getTravail } from '@/utils/service';
 import CardLayout from '@/components/layout/CardLayout.vue';
+import { chartTypes } from '@/utils/chart';
 
 export default {
-  components: { ContainerLayout, LineChartCard, CardLayout },
+  components: { ContainerLayout, GenericChartCard, CardLayout },
   data() {
     return {
       chartsData: {},
+      chartType: chartTypes.LINE,
       loaded: false,
     };
   },
