@@ -39,6 +39,7 @@ export default {
   computed: {
     circularColor() {
       if (this.displayedValue < 0) return 'green';
+      if (this.displayedValue < 2) return 'amber';
       if (this.displayedValue < 5) return 'orange';
       return 'red';
     },
