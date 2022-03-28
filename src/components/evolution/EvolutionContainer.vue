@@ -81,7 +81,7 @@ export default {
       descriptionSecondChart:
         "Comparatif de l'évolution de l'écart entre les hommes et les femmes. Le chiffre de gauche représente la situation à la date de début et le chiffre de droite représente la situation à la date de fin.",
       descriptionThirdChart:
-        "Nombre d'années nécessaires avant d'atteindre une situation équitable ou avantageuse pour les femmes",
+        "Nombre d'années nécessaires avant d'atteindre une situation équitable ou avantageuse pour la Femme",
       equity: 0,
       equityRange: 0,
     };
