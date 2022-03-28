@@ -1,5 +1,5 @@
 <template>
-  <ContainerLayout color="#fee3ab" class="py-3">
+  <ContainerLayout class="py-3 econmy-container">
     <CardLayout color="white" class="mx-3 mb-5">
       <v-card-title>
         <v-icon large left> mdi-cash-multiple </v-icon>
@@ -22,7 +22,7 @@
           md="6"
           class="d-flex"
         >
-          <GenericChartCard :chartData="chartData" :chartType="chartType"/>
+          <GenericChartCard :chartData="chartData" :chartType="chartType" />
         </v-col>
       </v-row>
     </v-container>
@@ -57,4 +57,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.econmy-container {
+  background: linear-gradient(#fee3ab, #fe9292);
+}
+</style>

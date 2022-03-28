@@ -1,5 +1,5 @@
 <template>
-  <ContainerLayout color="#97d3d3" class="pa-3">
+  <ContainerLayout class="pa-3 evolution-container">
     <CardLayout>
       <v-card-title>
         <v-icon large left> mdi-cash-multiple </v-icon>
@@ -123,5 +123,9 @@ export default {
   justify-content: space-around;
   display: flex;
   height: 100%;
+}
+
+.evolution-container {
+  background: linear-gradient(#97d3d3, #fee3ab);
 }
 </style>
