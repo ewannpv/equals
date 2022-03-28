@@ -29,9 +29,10 @@
             </v-col>
             <v-col cols="12" md="4" class="d-flex">
               <EquityCard
-                title="Nombre d'année avant équité"
+                title="Année de l'équité"
                 description="lorem ipsum..."
                 :value="equity"
+                :range="equityRange"
                 :key="needUpdate"
               />
             </v-col>
@@ -80,6 +81,7 @@ export default {
       descriptionSecondChart:
         'Comparatif de situation entre homme et femme aux dates sélectionnées. La valeur de gauche indique la situation à la date de debut et la valeur de droite indique la situation à la date de fin. Si la valeur est négative, cela veut dire que la situation de la femme est meilleure que celle des hommes',
       equity: 0,
+      equityRange: 0,
     };
   },
   mounted() {
@@ -103,7 +105,8 @@ export default {
       this.needUpdate = !this.needUpdate;
     },
     updateEquity(value) {
-      this.equity = value;
+      this.equity = +value[0];
+      this.equityRange = +value[1];
     },
   },
 };

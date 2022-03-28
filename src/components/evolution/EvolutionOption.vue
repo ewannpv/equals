@@ -69,7 +69,7 @@ export default {
 
       this.$emit('updateEvolution', evolution);
       this.$emit('updateEvolutionGap', evolutionGap);
-      this.$emit('updateEquity', equity);
+      this.$emit('updateEquity', [equity, this.range[1]]);
       this.$emit('updateOptionCard');
     },
     onUpdateItems(items) {
@@ -82,7 +82,7 @@ export default {
 
       this.$emit('updateEvolution', evolution);
       this.$emit('updateEvolutionGap', evolutionGap);
-      this.$emit('updateEquity', equity);
+      this.$emit('updateEquity', [equity, this.range[1]]);
       this.$emit('updateOptionCard');
     },
     async setTreeView() {
