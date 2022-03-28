@@ -4,18 +4,24 @@
     <v-card-text>
       {{ chartData.description }}
     </v-card-text>
-    <BarChart :fetchedChartData="chartData" />
+    <GenericChart :chartData="chartData" :type="chartType" />
   </CardLayout>
 </template>
 
 <script>
-import BarChart from '@/components/charts/BarChart.vue';
+import GenericChart from '@/components/charts/GenericChart.vue';
 import CardLayout from '@/components/layout/CardLayout.vue';
+import { chartTypes } from '@/utils/chart';
 
 export default {
   props: {
     chartData: {},
   },
-  components: { BarChart, CardLayout },
+  data() {
+    return {
+      chartType: chartTypes.BAR,
+    };
+  },
+  components: { GenericChart, CardLayout },
 };
 </script>

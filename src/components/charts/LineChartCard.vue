@@ -4,7 +4,7 @@
     <v-card-text>
       {{ filteredChartData.description }}
     </v-card-text>
-    <LineChart :fetchedChartData="filteredChartData" :key="refresh" />
+    <GenericChart :chartData="filteredChartData" :type="chartType" :key="refresh" />
     <v-row>
       <v-col class="px-4">
         <v-range-slider
@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import LineChart from '@/components/charts/LineChart.vue';
+import GenericChart from '@/components/charts/GenericChart.vue';
 import CardLayout from '@/components/layout/CardLayout.vue';
 import {
   estimationTypes,
@@ -132,10 +132,12 @@ import {
   getEstimatedValuesFromCoefficients,
   getMeanSquaredDeviation,
 } from '@/utils/computing';
+import { chartTypes } from '@/utils/chart';
 
 export default {
   data() {
     return {
+      chartType: chartTypes.LINE,
       displayEstimationBtn: false,
       estimationTypes: Object.values(estimationTypes),
       refresh: false,
@@ -170,7 +172,7 @@ export default {
     this.completedChartData = JSON.parse(JSON.stringify(this.chartData));
   },
   components: {
-    LineChart,
+    GenericChart,
     CardLayout,
   },
   props: {
