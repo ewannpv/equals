@@ -234,7 +234,7 @@ export const getEvolution = (treeView, range, items) => {
     }
   });
 
-  if (!elements.length) return 0;
+  if (!elements.length) return null;
   const sumElements = elements.reduce(
     (previousValue, currentValue) => previousValue + currentValue,
     0,
@@ -368,7 +368,7 @@ export const getEvolutionGap = (treeView, range, items) => {
         break;
     }
   });
-  if (!elements.length) return 0;
+  if (!elements.length) return null;
 
   let startSum = 0;
   let endSum = 0;
@@ -381,6 +381,8 @@ export const getEvolutionGap = (treeView, range, items) => {
 };
 
 export const getEquity = (evolutionGap, range) => {
+  if (evolutionGap == null) return null;
+
   const time = range[1] - range[0];
   const diff = evolutionGap[0] - evolutionGap[1];
   if (time <= 0) return 0;

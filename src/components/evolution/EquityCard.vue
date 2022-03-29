@@ -5,9 +5,12 @@
         <v-row justify="center" class="text-h5"> {{ title }} </v-row>
         <v-row justify="center" align="center" class="ma-0">
           <v-btn x-large outlined rounded :color="circularColor">
-            <h1>
-              {{ displayedValue }}
-            </h1>
+            <div v-if="displayedValue">
+              <h1>{{ displayedValue }}</h1>
+            </div>
+            <div v-else>
+              <v-icon large>mdi-database-remove</v-icon>
+            </div>
           </v-btn>
         </v-row>
         <v-row v-if="value > 0" justify="center" class="mb-2 text-button">
@@ -34,12 +37,14 @@ export default {
   components: { CardLayout },
   computed: {
     circularColor() {
+      if (this.value == null) return 'grey';
       if (this.value <= 0) return 'green';
       if (this.value < 2) return 'amber';
       if (this.value < 5) return 'orange';
       return 'red';
     },
     displayedValue() {
+      if (this.value == null) return null;
       if (this.value <= 0) return 'Équité atteinte';
       if (Number.isNaN(this.value)) return 0;
       if (!Number.isFinite(this.value)) return 'Jamais';

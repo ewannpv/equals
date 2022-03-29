@@ -11,7 +11,12 @@
             :value="Math.abs(displayedValue)"
             :color="circularColor"
           >
-            <h1>{{ displayedValue }}%</h1>
+            <div v-if="displayedValue">
+              <h1>{{ displayedValue }}%</h1>
+            </div>
+            <div v-else>
+              <v-icon large>mdi-database-remove</v-icon>
+            </div>
           </v-progress-circular>
         </v-row>
         <v-row justify="center">
@@ -30,11 +35,8 @@ export default {
   components: { CardLayout },
   data() {
     return {
-      displayedValue: 0,
+      displayedValue: this.value ? this.value : 0,
     };
-  },
-  mounted() {
-    this.displayedValue = this.value;
   },
   computed: {
     circularColor() {

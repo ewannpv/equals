@@ -91,22 +91,30 @@ export default {
   },
   methods: {
     updateEvolution(value) {
+      if (value == null) {
+        this.evolution = null;
+        return;
+      }
       this.evolution = parseFloat(value.toFixed(2), 10);
     },
     updateEvolutionGap(value) {
-      if (value.length) {
-        this.evolutionGap = [
-          parseFloat(value[0].toFixed(2), 10),
-          parseFloat(value[1].toFixed(2), 10),
-        ];
-      } else {
-        this.evolutionGap = [0, 0];
+      if (value == null) {
+        this.evolutionGap = null;
+        return;
       }
+      this.evolutionGap = [
+        parseFloat(value[0].toFixed(2), 10),
+        parseFloat(value[1].toFixed(2), 10),
+      ];
     },
     updateOptionCard() {
       this.needUpdate = !this.needUpdate;
     },
     updateEquity(value) {
+      if (value[0] == null) {
+        this.equity = null;
+        return;
+      }
       this.equity = +value[0];
       this.equityRange = +value[1];
     },
