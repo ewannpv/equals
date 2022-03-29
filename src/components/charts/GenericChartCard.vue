@@ -35,8 +35,33 @@
             {{ displayEstimationBtn ? 'Cacher les prévisions' : 'Afficher les prévisions' }}
           </v-btn>
         </v-col>
-        <v-col md="6" v-if="displayEstimationBtn">
-          <v-btn outlined color="warning"> {{ previsionsInfo() }} </v-btn>
+        <v-col md="6" class="d-flex justify-space-between align-center">
+          <v-btn
+            v-if="displayEstimationBtn"
+            outlined
+            color="warning">
+            {{ previsionsInfo() }}
+          </v-btn>
+          <v-spacer v-else/>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <div >
+                <v-btn
+                  icon
+                  color="warning"
+                  @click="onToggleChartType"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon v-if="chartType === chartTypes.LINE">mdi-chart-bar</v-icon>
+                  <v-icon v-else-if="chartType === chartTypes.BAR">mdi-chart-line</v-icon>
+                </v-btn>
+              </div>
+            </template>
+            <div>
+              Passer à un diagramme en {{this.chartType === chartTypes.LINE ? 'bâtons' : 'ligne'}}
+            </div>
+          </v-tooltip>
         </v-col>
       </v-row>
       <div v-if="displayEstimationBtn" class="mt-2">
@@ -142,6 +167,7 @@ import {
   getEstimatedValuesFromCoefficients,
   getMeanSquaredDeviation,
 } from '@/utils/computing';
+import { chartTypes } from '@/utils/chart';
 
 export default {
   components: {
@@ -150,7 +176,7 @@ export default {
   },
   props: {
     chartData: {},
-    chartType: undefined,
+    defaultChartType: undefined,
     chartHelper: null,
   },
   data() {
@@ -168,6 +194,8 @@ export default {
       textFieldCoefficientA: '',
       textFieldCoefficientB: '',
       switchAutoB: false,
+      chartType: this.defaultChartType,
+      chartTypes,
     };
   },
   beforeMount() {
@@ -187,7 +215,6 @@ export default {
     this.completeDatasetWithPrevision();
     this.filterChartData();
   },
-
   methods: {
     displayEstimation() {
       this.displayEstimationBtn = !this.displayEstimationBtn;
@@ -468,6 +495,13 @@ export default {
       this.switchAutoB = false;
 
       this.updateEstimationData();
+    },
+    onToggleChartType() {
+      if (this.chartType === chartTypes.BAR) {
+        this.chartType = chartTypes.LINE;
+      } else {
+        this.chartType = chartTypes.BAR;
+      }
     },
   },
 };

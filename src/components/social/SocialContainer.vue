@@ -17,7 +17,7 @@
         >
           <GenericChartCard
             :chartData="chartData"
-            :chartType="chartType"
+            :defaultChartType="chartType"
             :chartHelper="chartData.helper"
           />
         </v-col>
