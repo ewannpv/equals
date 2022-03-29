@@ -16,7 +16,11 @@
           md="6"
           class="d-flex"
         >
-          <GenericChartCard :chartData="chartData" :chartType="chartType" />
+          <GenericChartCard
+            :chartData="chartData"
+            :chartType="chartType"
+            :chartHelper="chartData.helper"
+          />
         </v-col>
       </v-row>
     </v-container>

@@ -3,7 +3,11 @@
     <v-card-title>{{ filteredChartData.title }}</v-card-title>
     <v-card-text>
       {{ filteredChartData.description }}
+      <v-alert v-if="chartHelper" text outlined color="blue" icon="mdi-information">
+        {{ chartHelper }}
+      </v-alert>
     </v-card-text>
+
     <GenericChart :chartData="filteredChartData" :type="chartType" />
     <v-row>
       <v-col class="px-4">
@@ -140,6 +144,15 @@ import {
 } from '@/utils/computing';
 
 export default {
+  components: {
+    GenericChart,
+    CardLayout,
+  },
+  props: {
+    chartData: {},
+    chartType: undefined,
+    chartHelper: null,
+  },
   data() {
     return {
       displayEstimationBtn: false,
@@ -174,14 +187,7 @@ export default {
     this.completeDatasetWithPrevision();
     this.filterChartData();
   },
-  components: {
-    GenericChart,
-    CardLayout,
-  },
-  props: {
-    chartData: {},
-    chartType: undefined,
-  },
+
   methods: {
     displayEstimation() {
       this.displayEstimationBtn = !this.displayEstimationBtn;
