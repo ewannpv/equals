@@ -75,15 +75,11 @@
                 {{ getCurrentFormula() }}
               </div>
             </v-col>
+            <v-col md="6"> </v-col>
           </v-row>
           <v-row>
-            <v-col md="6" class="d-flex flex-column justify-center align-center">
-              <v-btn
-                depressed
-                @click="resetPrevisions"
-                class="mt-3">
-                Restaurer les meilleurs paramètres
-              </v-btn>
+            <v-col md="6">
+              <v-btn depressed @click="resetPrevisions"> Restaurer </v-btn>
             </v-col>
             <v-col md="6">
               <v-text-field

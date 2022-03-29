@@ -31,8 +31,14 @@
 import CardLayout from '@/components/layout/CardLayout.vue';
 
 export default {
-  props: { title: String, description: String, value: Number },
-  components: { CardLayout },
+  props: {
+    title: String,
+    description: String,
+    value: Number,
+  },
+  components: {
+    CardLayout,
+  },
   data() {
     return {
       displayedValue: this.value ? this.value : 0,
@@ -40,10 +46,10 @@ export default {
   },
   computed: {
     circularColor() {
-      if (this.displayedValue < 0) return 'green';
-      if (this.displayedValue < 2) return 'amber';
-      if (this.displayedValue < 5) return 'orange';
-      return 'red';
+      if (this.displayedValue < 0) return 'red';
+      if (this.displayedValue < 2) return 'orange';
+      if (this.displayedValue < 5) return 'amber';
+      return 'green';
     },
   },
 };
