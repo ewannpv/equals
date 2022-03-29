@@ -35,7 +35,7 @@
           <v-btn outlined color="warning"> {{ previsionsInfo() }} </v-btn>
         </v-col>
       </v-row>
-      <div v-if="displayEstimationBtn">
+      <div v-if="displayEstimationBtn" class="mt-2">
         Le mode prévision est activé. Vous pouvez consulter les données prédictives de
         {{ +chartData.labels[chartData.labels.length - 1] + 1 }} jusqu'à {{ lastEstimatedYear }}.
         Cette évolution a été estimée grâce à un modèle mathématique que vous pouvez également
