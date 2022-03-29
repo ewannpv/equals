@@ -5,7 +5,7 @@
     <v-spacer></v-spacer>
 
     <v-btn icon>
-      <v-icon>mdi-heart</v-icon>
+      <v-icon @click="openINSEE">mdi-heart</v-icon>
     </v-btn>
   </v-app-bar>
 </template>
@@ -13,6 +13,14 @@
 <script>
 export default {
   data: () => ({}),
+  methods: {
+    openWhereIsLove() {
+      window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley');
+    },
+    openINSEE() {
+      window.open('https://www.insee.fr/fr/accueil');
+    },
+  },
 };
 </script>
 
