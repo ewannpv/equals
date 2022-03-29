@@ -382,13 +382,16 @@ export const getEvolutionGap = (treeView, range, items) => {
 
 export const getEquity = (evolutionGap, range) => {
   if (evolutionGap == null) return null;
+  if (evolutionGap[1] < 0) return 0;
 
   const time = range[1] - range[0];
   const diff = evolutionGap[0] - evolutionGap[1];
+
   if (time <= 0) return 0;
 
   const ratio = diff / time;
-  if (ratio < 0) return 1 / 0;
 
+  if (ratio < 0) return 1 / 0;
+  console.log(Math.ceil(evolutionGap[1] / ratio));
   return Math.ceil(evolutionGap[1] / ratio);
 };
