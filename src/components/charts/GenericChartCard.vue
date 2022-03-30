@@ -17,7 +17,7 @@
           :min="min"
           hide-details
           class="align-center"
-          @end="filterChartData"
+          @end="onRangeUpdate"
         >
           <template v-slot:prepend>
             {{ range[0] }}
@@ -107,8 +107,14 @@
             <v-col md="6"> </v-col>
           </v-row>
           <v-row>
-            <v-col md="6">
+            <v-col md="6" class="d-flex justify-space-between align-center">
               <v-btn depressed @click="resetPrevisions"> Restaurer </v-btn>
+              <v-checkbox
+                v-model="usePrevisionRange"
+                label="Calculer uniquement sur la période sélectionnée"
+                class="ml-2"
+                @change="onChangeUsePrevisionRange"
+              ></v-checkbox>
             </v-col>
             <v-col md="6">
               <v-text-field
@@ -196,6 +202,7 @@ export default {
       switchAutoB: false,
       chartType: this.defaultChartType,
       chartTypes,
+      usePrevisionRange: true, // compute best model only for selected range
     };
   },
   beforeMount() {
@@ -213,7 +220,6 @@ export default {
     this.range = [minValue, this.max];
 
     this.completeDatasetWithPrevision();
-    this.filterChartData();
   },
   methods: {
     displayEstimation() {
@@ -226,6 +232,15 @@ export default {
         this.max = lastYear;
       }
       this.filterChartData();
+    },
+    onRangeUpdate() {
+      if (this.usePrevisionRange) {
+        this.onChangePrevisionRange();
+        this.updateEstimationData();
+      } else {
+        // already called if usePrevisionRange
+        this.filterChartData();
+      }
     },
     filterChartData() {
       this.filteredChartData = JSON.parse(JSON.stringify(this.completedChartData));
@@ -254,92 +269,111 @@ export default {
 
       return futureYears;
     },
+    getBestCoefficientsForDataset(dataset) {
+      const { labels } = this.chartData;
+      let valuesX;
+      let data;
+      if (this.usePrevisionRange) {
+        let first = labels.findIndex((year) => parseInt(
+          year,
+          10,
+        ) === parseInt(this.range[0], 10));
+        let last = labels.findIndex((year) => parseInt(
+          year,
+          10,
+        ) === parseInt(this.range[1], 10));
+        if (first === -1) {
+          first = 0;
+        }
+        if (last === -1) {
+          last = labels.length - 1;
+        }
+
+        valuesX = labels.slice(first, last + 1);
+        data = dataset.data.slice(first, last + 1);
+      } else {
+        valuesX = labels;
+        data = dataset.data.slice(0, labels.length);
+      }
+
+      valuesX = valuesX.map((year) => parseInt(year, 10));
+
+      /* compute estimated model linear, exponential and logarithmic */
+      const linearValues = getBestFitLineValues(valuesX, data);
+      const expValues = getBestFitLineExpValues(valuesX, data);
+      const logValues = getBestFitLineLogValues(valuesX, data);
+
+      /* compute standard error associated with each models */
+      const linearDeviation = getMeanSquaredDeviation(data, linearValues.resultValuesY);
+      const expDeviation = getMeanSquaredDeviation(data, expValues.resultValuesY);
+      const logDeviation = getMeanSquaredDeviation(data, logValues.resultValuesY);
+
+      /* check closest model */
+      const minDeviation = Math.min(linearDeviation, expDeviation, logDeviation);
+
+      let bestType;
+      switch (minDeviation) {
+        case linearDeviation:
+          bestType = estimationTypes.LINEAR;
+          break;
+        case expDeviation:
+          bestType = estimationTypes.EXPONENTIAL;
+          break;
+        case logDeviation:
+          bestType = estimationTypes.LOGARITHMIC;
+          break;
+        default:
+          break;
+      }
+
+      return {
+        bestType, // type of closest model to the effective data
+        [estimationTypes.LINEAR]: {
+          bestA: linearValues.a, // coefficient a for the closest linear model computed
+          bestB: linearValues.b,
+        },
+        [estimationTypes.EXPONENTIAL]: {
+          bestA: expValues.a,
+          bestB: expValues.b,
+        },
+        [estimationTypes.LOGARITHMIC]: {
+          bestA: logValues.a,
+          bestB: logValues.b,
+        },
+      };
+    },
     completeDatasetWithPrevision() {
       this.completedChartData = {
         ...this.chartData,
       };
 
-      const futureYears = this.getArrayOfYearsToPredict();
-      this.completedChartData.labels = this.chartData.labels.concat(futureYears);
-
-      const { datasets, labels } = this.chartData;
-      const valuesX = labels.map((x) => parseInt(x, 10));
-
+      const { datasets } = this.chartData;
       this.completedChartData.datasets = datasets.map((dataset) => {
-        /* compute estimated model linear, exponential and logarithmic */
-        const linearValues = getBestFitLineValues(valuesX, dataset.data);
-        const expValues = getBestFitLineExpValues(valuesX, dataset.data);
-        const logValues = getBestFitLineLogValues(valuesX, dataset.data);
-
-        /* compute standard error associated with each models */
-        const linearDeviation = getMeanSquaredDeviation(dataset.data, linearValues.resultValuesY);
-        const expDeviation = getMeanSquaredDeviation(dataset.data, expValues.resultValuesY);
-        const logDeviation = getMeanSquaredDeviation(dataset.data, logValues.resultValuesY);
-
-        /* check closest model */
-        const minDeviation = Math.min(linearDeviation, expDeviation, logDeviation);
-
-        let estimatedValues;
-        let bestType;
-        switch (minDeviation) {
-          case linearDeviation:
-            bestType = estimationTypes.LINEAR;
-            estimatedValues = getEstimatedValuesFromCoefficients(
-              futureYears,
-              linearValues.a,
-              linearValues.b,
-              estimationTypes.LINEAR,
-            );
-            break;
-          case expDeviation:
-            bestType = estimationTypes.EXPONENTIAL;
-            estimatedValues = getEstimatedValuesFromCoefficients(
-              futureYears,
-              expValues.a,
-              expValues.b,
-              estimationTypes.EXPONENTIAL,
-            );
-            break;
-          case logDeviation:
-            bestType = estimationTypes.LOGARITHMIC;
-            estimatedValues = getEstimatedValuesFromCoefficients(
-              futureYears,
-              logValues.a,
-              logValues.b,
-              estimationTypes.LOGARITHMIC,
-            );
-            break;
-          default:
-            break;
-        }
-
+        const coeffs = this.getBestCoefficientsForDataset(dataset);
         return {
           ...dataset,
           fill: false,
           borderWidth: 1,
-          data: dataset.data.concat(estimatedValues),
           previsions: {
-            bestType, // type of closest model to the effective data
-            selectedType: bestType, // current selected type for prevision
+            ...coeffs,
+            selectedType: coeffs.bestType, // current selected type for prevision
             [estimationTypes.LINEAR]: {
-              bestA: linearValues.a, // coefficient a for the closest linear model computed
-              currentA: linearValues.a, // current coefficient a of linear model for prevision
-              bestB: linearValues.b,
-              currentB: linearValues.b,
+              ...coeffs[estimationTypes.LINEAR],
+              // current coefficients of linear model for prevision -> may be changed by user
+              currentA: coeffs[estimationTypes.LINEAR].bestA,
+              currentB: coeffs[estimationTypes.LINEAR].bestB,
               autoB: false, // auto compute coefficient b to match last dataset value
             },
             [estimationTypes.EXPONENTIAL]: {
-              bestA: expValues.a,
-              currentA: expValues.a,
-              bestB: expValues.b,
-              currentB: expValues.b,
+              ...coeffs[estimationTypes.EXPONENTIAL],
+              currentA: coeffs[estimationTypes.EXPONENTIAL].bestA,
+              currentB: coeffs[estimationTypes.EXPONENTIAL].bestB,
               autoB: false,
             },
             [estimationTypes.LOGARITHMIC]: {
-              bestA: logValues.a,
-              currentA: logValues.a,
-              bestB: logValues.b,
-              currentB: logValues.b,
+              ...coeffs[estimationTypes.LOGARITHMIC],
+              currentA: coeffs[estimationTypes.LOGARITHMIC].bestA,
+              currentB: coeffs[estimationTypes.LOGARITHMIC].bestB,
               autoB: false,
             },
           },
@@ -351,6 +385,8 @@ export default {
       this.selectedEstimationType = previsions.selectedType;
       this.textFieldCoefficientA = previsions[previsions.selectedType].bestA;
       this.textFieldCoefficientB = previsions[previsions.selectedType].bestB;
+
+      this.updateEstimationData();
     },
     previsionsInfo() {
       return `Prévisions à partir de ${this.chartData.labels[this.chartData.labels.length - 1]}`;
@@ -428,39 +464,92 @@ export default {
           previsions.selectedType,
         );
         this.textFieldCoefficientB = previsions[previsions.selectedType].currentB;
-
-        console.log(
-          getEstimatedValuesFromCoefficients(
-            [this.chartData.labels[lastDataIndex]],
-            previsions[previsions.selectedType].currentA,
-            previsions[previsions.selectedType].currentB,
-            previsions.selectedType,
-          ),
-        );
         this.updateEstimationData();
       }
+    },
+    onChangePrevisionRange() {
+      this.completedChartData.datasets.forEach((dataset) => {
+        // get new best coefficients depending on check
+        const coeffs = this.getBestCoefficientsForDataset(dataset);
+        const { previsions } = dataset;
+        Object.values(estimationTypes).forEach((type) => {
+          const typeCoeffs = previsions[type];
+
+          let hasChanged = false;
+
+          // update current coefficients if they were unchanged
+          if (typeCoeffs.currentA === typeCoeffs.bestA) {
+            typeCoeffs.currentA = coeffs[type].bestA;
+          } else {
+            hasChanged = true;
+          }
+
+          if (typeCoeffs.currentB === typeCoeffs.bestB) {
+            typeCoeffs.currentB = coeffs[type].bestB;
+          } else {
+            hasChanged = true;
+          }
+
+          if (previsions.selectedType !== previsions.bestType) {
+            hasChanged = true;
+          }
+
+          if (!hasChanged) {
+            previsions.selectedType = coeffs.bestType;
+          }
+
+          Object.assign(previsions[type], coeffs[type]); // set best coefficients
+        });
+
+        previsions.bestType = coeffs.bestType;
+      });
+
+      this.onChangeSelectedDatasetForPrevision();
+    },
+    onChangeUsePrevisionRange() {
+      this.onChangePrevisionRange();
+      this.resetPrevisions();
     },
     validateCoefficientInput(val) {
       return !Number.isNaN(parseFloat(val)) || 'Ce champ doit être un nombre';
     },
     updateEstimationData() {
-      const dataset = this.getSelectedDataset();
       const futureYears = this.getArrayOfYearsToPredict();
+      const isInit = this.completedChartData.labels.length === this.chartData.labels.length;
 
-      // get current coefficients
-      const { currentA, currentB } = dataset.previsions[dataset.previsions.selectedType];
-      const newValues = getEstimatedValuesFromCoefficients(
-        futureYears,
-        currentA,
-        currentB,
-        dataset.previsions.selectedType,
-      );
+      if (isInit) {
+        // previsions not initialized -> fill labels
+        this.completedChartData.labels = this.completedChartData.labels.concat(futureYears);
+      }
 
-      dataset.data.splice(
-        dataset.data.length - futureYears.length,
-        futureYears.length,
-        ...newValues,
-      );
+      this.completedChartData.datasets = this.completedChartData.datasets.map((dataset) => {
+        const { currentA, currentB } = dataset.previsions[dataset.previsions.selectedType];
+        const newValues = getEstimatedValuesFromCoefficients(
+          futureYears,
+          currentA,
+          currentB,
+          dataset.previsions.selectedType,
+        );
+
+        let data;
+        if (isInit) {
+          data = dataset.data.concat(newValues);
+        } else {
+          data = [...dataset.data];
+          data.splice(
+            dataset.data.length - futureYears.length,
+            futureYears.length,
+            ...newValues,
+          );
+        }
+
+        return {
+          ...dataset,
+          data,
+        };
+      });
+
+      // update render
       this.filterChartData();
     },
     getCurrentFormula() {
@@ -476,20 +565,23 @@ export default {
       }
     },
     resetPrevisions() {
-      const { previsions } = this.getSelectedDataset();
+      this.completedChartData.datasets.forEach((dataset) => {
+        const { previsions } = dataset;
 
-      // auto select best estimation type
-      previsions.selectedType = previsions.bestType;
-      this.selectedEstimationType = previsions.bestType;
+        // auto select best estimation type
+        previsions.selectedType = previsions.bestType;
 
-      // reset current coefficients
-      Object.values(estimationTypes).forEach((type) => {
-        const coeffs = previsions[type];
-        coeffs.currentA = coeffs.bestA;
-        coeffs.currentB = coeffs.bestB;
-        coeffs.autoB = false;
+        // reset current coefficients
+        Object.values(estimationTypes).forEach((type) => {
+          const coeffs = previsions[type];
+          coeffs.currentA = coeffs.bestA;
+          coeffs.currentB = coeffs.bestB;
+          coeffs.autoB = false;
+        });
       });
 
+      const { previsions } = this.getSelectedDataset();
+      this.selectedEstimationType = previsions.bestType;
       this.textFieldCoefficientA = previsions[previsions.bestType].bestA;
       this.textFieldCoefficientB = previsions[previsions.bestType].bestB;
       this.switchAutoB = false;
