@@ -5,7 +5,7 @@
     <v-spacer></v-spacer>
 
     <v-btn icon>
-      <v-icon @click="openINSEE">mdi-heart</v-icon>
+      <v-icon @dblclick="openWhereIsLove">mdi-heart</v-icon>
     </v-btn>
   </v-app-bar>
 </template>

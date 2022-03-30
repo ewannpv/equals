@@ -13,7 +13,7 @@
           <v-row justify="center">
             <v-col cols="12" md="4" class="d-flex">
               <EvolutionCard
-                title="Évolution de la situation de la Femme"
+                title="Évolution de la situation de la Femme en pourcentage"
                 :description="descriptionFirstChart"
                 :value="evolution"
                 :key="needUpdate"
@@ -21,7 +21,7 @@
             </v-col>
             <v-col cols="12" md="4" class="d-flex">
               <GapCard
-                title="Évolution écart Homme / Femme"
+                title="Évolution écart Homme / Femme en pourcentage"
                 :description="descriptionSecondChart"
                 :value="evolutionGap"
                 :key="needUpdate"
