@@ -26,7 +26,7 @@ export default {
 
 <style>
 .custom-title {
-  font-size: 7.5rem;
+  font-size: 2.2rem !important;
   font-weight: bolder;
   color: white;
 }
