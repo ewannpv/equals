@@ -13,7 +13,6 @@
             </div>
           </v-btn>
           <v-icon>mdi-arrow-right-bold </v-icon>
-
           <v-btn class="ma-2" x-large outlined rounded :color="circularColor">
             <div v-if="displayedValue">
               <h1>{{ displayedValue[1] }}%</h1>
