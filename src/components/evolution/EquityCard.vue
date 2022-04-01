@@ -2,7 +2,7 @@
   <CardLayout color="white" width="100%">
     <v-card-text class="full-height">
       <v-col cols="12" class="flex-evolution-card">
-        <v-row justify="center" class="text-h5"> {{ title }} </v-row>
+        <v-row justify="center" class="text-h5 mb-2"> {{ title }} </v-row>
         <v-row justify="center" align="center" class="ma-0">
           <v-btn x-large outlined rounded :color="circularColor">
             <div v-if="displayedValue">
